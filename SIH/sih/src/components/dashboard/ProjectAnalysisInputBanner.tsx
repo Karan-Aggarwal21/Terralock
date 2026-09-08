@@ -7,14 +7,9 @@ import {
   PlusCircle,
   ChevronDown,
   ChevronUp,
-  Sparkles,
   Loader2,
   AlertCircle,
   CheckCircle2,
-  MapPin,
-  Building2,
-  Coins,
-  Maximize2,
 } from 'lucide-react';
 
 interface ProjectFormState {
@@ -169,9 +164,6 @@ export const ProjectAnalysisInputBanner: React.FC = () => {
         className="w-full px-6 py-4.5 flex items-center justify-between gap-4 transition-colors text-left group cursor-pointer"
       >
         <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2D7A4F] to-[#1e5837] flex items-center justify-center text-white shadow-md shadow-[#2D7A4F]/20 shrink-0 group-hover:scale-105 transition-transform duration-200">
-            <Sparkles className="w-5 h-5 animate-pulse" />
-          </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
               <span className="font-bold text-[16px] sm:text-[17px] text-[#101827] font-sans tracking-tight">
@@ -249,8 +241,8 @@ export const ProjectAnalysisInputBanner: React.FC = () => {
 
             {/* State / Region */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-[#4B5563] mb-1.5 font-sans flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-[#527568]" /> State / Region
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#4B5563] mb-1.5 font-sans">
+                State / Region
               </label>
               <input
                 type="text"
@@ -264,8 +256,8 @@ export const ProjectAnalysisInputBanner: React.FC = () => {
 
             {/* Land Scope (Hectares) */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-[#4B5563] mb-1.5 font-sans flex items-center gap-1">
-                <Maximize2 className="w-3.5 h-3.5 text-[#527568]" /> Land Scope (Ha)
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#4B5563] mb-1.5 font-sans">
+                Land Scope (Ha)
               </label>
               <input
                 type="number"
@@ -281,8 +273,8 @@ export const ProjectAnalysisInputBanner: React.FC = () => {
 
             {/* Budget (Cr) */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-[#4B5563] mb-1.5 font-sans flex items-center gap-1">
-                <Coins className="w-3.5 h-3.5 text-[#527568]" /> Budget (₹ Cr)
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#4B5563] mb-1.5 font-sans">
+                Budget (₹ Cr)
               </label>
               <input
                 type="number"
@@ -300,8 +292,8 @@ export const ProjectAnalysisInputBanner: React.FC = () => {
           {/* GeoJSON Polygon Coordinates */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#4B5563] font-sans flex items-center gap-1">
-                <Building2 className="w-3.5 h-3.5 text-[#527568]" /> Polygon Boundary Coordinates [Lng, Lat]
+              <label className="text-xs font-semibold uppercase tracking-wider text-[#4B5563] font-sans">
+                Polygon Boundary Coordinates [Lng, Lat]
               </label>
               <span className="text-[11px] text-[#64748B]">OpenStreetMap Overpass Bounding Box</span>
             </div>
