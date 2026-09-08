@@ -21,7 +21,7 @@ export interface ProbabilityGaugeProps {
 
 export const ProbabilityGauge: React.FC<ProbabilityGaugeProps> = ({
   probability,
-  size = 200,
+  size = 220,
   strokeWidth = 14,
   showBadge = true,
   showScaleLabels = true,
@@ -61,17 +61,16 @@ export const ProbabilityGauge: React.FC<ProbabilityGaugeProps> = ({
   const riskLevel = getRiskLevel(clampedProb);
   const riskConfig = getRiskConfig(riskLevel);
 
-  // SVG Gauge calculations (Semi-circle or 240 degree arc)
+  // SVG Gauge calculations
   const radius = (size - strokeWidth * 2) / 2;
   const center = size / 2;
-  
-  // 240-degree arc: from 150deg to 390deg (or -210 to 30)
-  // Let's use a 240 degree arc for government GIS gauge styling
+
+  // 240-degree arc: from 150deg to 390deg
   const startAngle = 150;
   const endAngle = 390;
   const angleRange = endAngle - startAngle; // 240 deg
-  
-  const currentAngle = startAngle + (clampedProb * angleRange);
+
+  const currentAngle = startAngle + clampedProb * angleRange;
 
   const polarToCartesian = (cx: number, cy: number, r: number, angleInDegrees: number) => {
     const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
@@ -89,15 +88,16 @@ export const ProbabilityGauge: React.FC<ProbabilityGaugeProps> = ({
   };
 
   const backgroundArc = describeArc(center, center, radius, startAngle, endAngle);
-  const progressArc = clampedProb > 0.005 ? describeArc(center, center, radius, startAngle, currentAngle) : '';
+  const progressArc =
+    clampedProb > 0.005 ? describeArc(center, center, radius, startAngle, currentAngle) : '';
 
   return (
-    <div className={`flex flex-col items-center justify-center ${className}`}>
+    <div className={`flex flex-col items-center justify-center select-none ${className}`}>
       <div className="relative flex items-center justify-center" style={{ width: size, height: size * 0.88 }}>
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
           <defs>
-            <filter id="gaugeShadow" x="-10%" y="-10%" width="120%" height="120%">
-              <feDropShadow dx="0" dy="2" stdDeviation="2" floodOpacity="0.15" />
+            <filter id="gaugeSoftShadow" x="-10%" y="-10%" width="120%" height="120%">
+              <feDropShadow dx="0" dy="1.5" stdDeviation="2" floodOpacity="0.12" />
             </filter>
           </defs>
 
@@ -105,8 +105,7 @@ export const ProbabilityGauge: React.FC<ProbabilityGaugeProps> = ({
           <path
             d={backgroundArc}
             fill="none"
-            stroke="currentColor"
-            className="text-slate-200 dark:text-slate-800"
+            stroke="#f1f5f3"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
           />
@@ -120,11 +119,11 @@ export const ProbabilityGauge: React.FC<ProbabilityGaugeProps> = ({
               strokeWidth={strokeWidth}
               strokeLinecap="round"
               className="transition-all duration-700 ease-out"
-              filter="url(#gaugeShadow)"
+              filter="url(#gaugeSoftShadow)"
             />
           )}
 
-          {/* Gauge Ticks */}
+          {/* Gauge Ticks at Standard Risk Thresholds */}
           {[0, 0.3, 0.6, 0.8, 1].map((tickVal) => {
             const tickAngle = startAngle + tickVal * angleRange;
             const innerPt = polarToCartesian(center, center, radius - strokeWidth / 2 - 4, tickAngle);
@@ -136,33 +135,32 @@ export const ProbabilityGauge: React.FC<ProbabilityGaugeProps> = ({
                 y1={innerPt.y}
                 x2={outerPt.x}
                 y2={outerPt.y}
-                stroke="currentColor"
+                stroke="#cbd5e1"
                 strokeWidth={1.5}
-                className="text-slate-300 dark:text-slate-700"
               />
             );
           })}
         </svg>
 
-        {/* Center Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center pt-4 text-center">
-          <span className="text-[11px] font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400">
+        {/* Center Readout */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center pt-3 text-center">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#64748b] font-semibold">
             {label}
           </span>
-          <div className="flex items-baseline justify-center font-mono font-bold tracking-tight text-slate-900 dark:text-white mt-1">
+          <div className="flex items-baseline justify-center font-mono font-bold tracking-tight text-[#111827] mt-1">
             <span className="text-3xl lg:text-4xl">{percentage}</span>
-            <span className="text-lg text-slate-500 ml-0.5">%</span>
+            <span className="text-base text-[#64748b] ml-0.5">%</span>
           </div>
           {showBadge && (
-            <div className="mt-2">
-              <RiskBadge level={riskLevel} size="sm" />
+            <div className="mt-2.5">
+              <RiskBadge level={riskLevel} size="xs" />
             </div>
           )}
         </div>
       </div>
 
       {showScaleLabels && (
-        <div className="flex justify-between w-full max-w-[200px] text-[10px] font-mono text-slate-400 dark:text-slate-500 px-2 mt-1">
+        <div className="flex justify-between w-full max-w-[210px] text-[10px] font-mono text-[#64748b] px-3 mt-1">
           <span>0%</span>
           <span>30%</span>
           <span>60%</span>

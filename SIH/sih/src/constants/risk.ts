@@ -1,3 +1,5 @@
+import { THEME_TOKENS } from './theme';
+
 export type RiskLevel = 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL';
 
 export interface RiskThresholdConfig {
@@ -18,44 +20,44 @@ export const RISK_THRESHOLDS: Record<RiskLevel, RiskThresholdConfig> = {
     min: 0,
     max: 0.30,
     label: 'Low Risk',
-    colorHex: '#10b981', // emerald-500
-    bgHex: '#ecfdf5',
-    badgeBg: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300',
-    badgeText: 'text-emerald-700 dark:text-emerald-300',
-    badgeBorder: 'border-emerald-200 dark:border-emerald-800/60',
+    colorHex: THEME_TOKENS.colors.risk.low.color,
+    bgHex: THEME_TOKENS.colors.risk.low.bg,
+    badgeBg: `bg-[${THEME_TOKENS.colors.risk.low.bg}] text-[${THEME_TOKENS.colors.risk.low.text}]`,
+    badgeText: `text-[${THEME_TOKENS.colors.risk.low.text}]`,
+    badgeBorder: `border-[${THEME_TOKENS.colors.risk.low.border}]`,
   },
   MODERATE: {
     level: 'MODERATE',
     min: 0.30,
     max: 0.60,
     label: 'Moderate Risk',
-    colorHex: '#f59e0b', // amber-500
-    bgHex: '#fffbeb',
-    badgeBg: 'bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300',
-    badgeText: 'text-amber-700 dark:text-amber-300',
-    badgeBorder: 'border-amber-200 dark:border-amber-800/60',
+    colorHex: THEME_TOKENS.colors.risk.moderate.color,
+    bgHex: THEME_TOKENS.colors.risk.moderate.bg,
+    badgeBg: `bg-[${THEME_TOKENS.colors.risk.moderate.bg}] text-[${THEME_TOKENS.colors.risk.moderate.text}]`,
+    badgeText: `text-[${THEME_TOKENS.colors.risk.moderate.text}]`,
+    badgeBorder: `border-[${THEME_TOKENS.colors.risk.moderate.border}]`,
   },
   HIGH: {
     level: 'HIGH',
     min: 0.60,
     max: 0.80,
     label: 'High Risk',
-    colorHex: '#f97316', // orange-500
-    bgHex: '#fff7ed',
-    badgeBg: 'bg-orange-50 text-orange-700 dark:bg-orange-950/50 dark:text-orange-300',
-    badgeText: 'text-orange-700 dark:text-orange-300',
-    badgeBorder: 'border-orange-200 dark:border-orange-800/60',
+    colorHex: THEME_TOKENS.colors.risk.high.color,
+    bgHex: THEME_TOKENS.colors.risk.high.bg,
+    badgeBg: `bg-[${THEME_TOKENS.colors.risk.high.bg}] text-[${THEME_TOKENS.colors.risk.high.text}]`,
+    badgeText: `text-[${THEME_TOKENS.colors.risk.high.text}]`,
+    badgeBorder: `border-[${THEME_TOKENS.colors.risk.high.border}]`,
   },
   CRITICAL: {
     level: 'CRITICAL',
     min: 0.80,
     max: 1.00,
     label: 'Critical Risk',
-    colorHex: '#ef4444', // red-500
-    bgHex: '#fef2f2',
-    badgeBg: 'bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300',
-    badgeText: 'text-rose-700 dark:text-rose-300',
-    badgeBorder: 'border-rose-200 dark:border-rose-800/60',
+    colorHex: THEME_TOKENS.colors.risk.critical.color,
+    bgHex: THEME_TOKENS.colors.risk.critical.bg,
+    badgeBg: `bg-[${THEME_TOKENS.colors.risk.critical.bg}] text-[${THEME_TOKENS.colors.risk.critical.text}]`,
+    badgeText: `text-[${THEME_TOKENS.colors.risk.critical.text}]`,
+    badgeBorder: `border-[${THEME_TOKENS.colors.risk.critical.border}]`,
   },
 };
 

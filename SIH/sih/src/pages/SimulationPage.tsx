@@ -30,7 +30,7 @@ export const SimulationPage: React.FC = () => {
   const [validationError, setValidationError] = useState<string | null>(null);
   const [runProgress, setRunProgress] = useState<number>(0);
 
-  // Sync state during render when project changes (official React pattern)
+  // Sync state during render when project changes
   if (selectedProject && selectedProject.project_id !== prevProjectId) {
     setPrevProjectId(selectedProject.project_id);
     const defaultParams: SimulationParameters = {
@@ -114,34 +114,36 @@ export const SimulationPage: React.FC = () => {
       />
     );
   }
-
   return (
     <div className="space-y-6">
       {/* 1. Module Header Banner */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs">
+      <div className="bg-white border border-[#e2e8e4] rounded-2xl p-6 sm:p-7 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold tracking-wider text-slate-500 uppercase">
-                MONTE CARLO SIMULATION ENGINE (F2)
+          <div className="space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="text-[12px] sm:text-[13px] font-semibold tracking-wider text-[#527568] uppercase">
+                STOCHASTIC ANALYTICS • MONTE CARLO SIMULATION ENGINE (F2)
               </span>
               <RiskBadge level={selectedProject.risk_level} size="xs" />
+              <span className="text-[11px] font-mono text-[#4b5563] bg-[#f4f7f5] px-2 py-0.5 rounded border border-[#e2e8e4]">
+                ID: {selectedProject.project_id}
+              </span>
             </div>
 
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#101827] tracking-tight leading-tight">
               {selectedProject.name}
             </h1>
 
-            <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
-              Corridor ID: <strong>{selectedProject.project_id}</strong> • Baseline Expected Delay: <strong>{selectedProject.predicted_delay_days} Days</strong>
+            <p className="text-sm text-[#4b5563]">
+              Sector Alignment: <strong className="text-[#101827]">{selectedProject.corridor_name || 'Standard Corridor'}</strong> • Baseline Expected Drift: <strong className="text-[#101827]">+{selectedProject.predicted_delay_days} Days</strong>
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="px-3 py-1.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-right">
-              <span className="text-[10px] font-mono text-slate-400 uppercase block">Simulation Engine</span>
-              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 font-mono flex items-center gap-1">
-                <Cpu className="w-3.5 h-3.5" />
+            <div className="px-3.5 py-2 rounded-xl border border-[#c6e6d2] bg-[#edf7f1] text-right">
+              <span className="text-[10px] font-mono text-[#4b5563] uppercase block font-semibold">Engine Pipeline</span>
+              <span className="text-xs font-bold text-[#1e5637] font-mono flex items-center justify-end gap-1.5 mt-0.5">
+                <Cpu className="w-3.5 h-3.5 text-[#244d3b]" />
                 <span>Stochastic v2.4</span>
               </span>
             </div>
@@ -149,12 +151,11 @@ export const SimulationPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Control Panel (§6.3) */}
+      {/* 2. Control Panel */}
       <SimulationControlPanel
         params={params}
         onChange={(newParams) => {
           setParams(newParams);
-          // Instant check for errors
           const v = validateSimulationParams(newParams);
           if (!v.isValid) {
             setValidationError(v.error || 'Invalid parameter input.');
@@ -168,23 +169,23 @@ export const SimulationPage: React.FC = () => {
         validationError={validationError}
       />
 
-      {/* 3. Progress / Loading State while running (§6.3) */}
+      {/* 3. Progress / Loading State while running */}
       {isRunning && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-xs text-center space-y-3">
+        <div className="bg-white border border-[#e2e8e4] rounded-2xl p-8 shadow-xs text-center space-y-4">
           <LoadingState
             message={`Sampling ${params.numSimulations.toLocaleString()} synthetic project lifecycles (${runProgress}%)...`}
             size="md"
           />
-          <div className="max-w-md mx-auto w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+          <div className="max-w-md mx-auto w-full bg-[#edf2ee] h-2.5 rounded-full overflow-hidden p-0.5">
             <div
-              className="bg-emerald-600 h-full rounded-full transition-all duration-300 ease-out"
+              className="bg-[#244d3b] h-full rounded-full transition-all duration-300 ease-out"
               style={{ width: `${runProgress}%` }}
             />
           </div>
         </div>
       )}
 
-      {/* 4. Results Block (§6.3) */}
+      {/* 4. Results Block */}
       {!isRunning && result && (
         <>
           <SimulationResultsGrid
@@ -192,7 +193,7 @@ export const SimulationPage: React.FC = () => {
             riskLevel={selectedProject.risk_level}
           />
 
-          {/* 5. Distribution / Histogram Chart (§6.3) */}
+          {/* 5. Distribution / Histogram Chart */}
           <SimulationHistogram
             result={result}
             riskLevel={selectedProject.risk_level}
@@ -200,18 +201,39 @@ export const SimulationPage: React.FC = () => {
         </>
       )}
 
+      {/* Empty State when no result exists */}
+      {!isRunning && !result && (
+        <div className="bg-white border border-[#e2e8e4] rounded-2xl p-8 text-center space-y-3">
+          <p className="text-sm text-[#4b5563]">No simulation results generated yet.</p>
+          <button
+            type="button"
+            onClick={handleRunSimulation}
+            className="px-4 py-2 rounded-xl bg-[#244d3b] text-white text-xs font-mono font-bold hover:bg-[#1b3d2e] transition-colors"
+          >
+            Run Initial Simulation
+          </button>
+        </div>
+      )}
+
       {/* 6. Statutory Simulation Interpretation Card */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs">
-        <div className="flex items-center gap-2 mb-2">
-          <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-            Stochastic Simulation Methodology Note
+      <div className="bg-white border border-[#e2e8e4] rounded-2xl p-6 sm:p-7 shadow-xs">
+        <div className="flex items-center gap-2 mb-3 pb-3 border-b border-[#edf2ee]">
+          <ShieldCheck className="w-4 h-4 text-[#244d3b]" />
+          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#244d3b]">
+            Stochastic Simulation Methodology & Risk Note
           </h3>
         </div>
 
-        <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300 font-sans">
-          Monte Carlo modeling executes iterative pseudo-random sampling across historical infrastructure delays, adjusting for statutory clearance cycles and litigation holding intervals. For corridor <strong>{selectedProject.name}</strong>, with an expected delay of <strong>{result?.expectedDelay || selectedProject.predicted_delay_days} days</strong>, there is an estimated <strong>{((result?.probabilityExceedsThreshold || 0) * 100).toFixed(0)}%</strong> probability that delay will breach the critical threshold of <strong>{params.delayThreshold} days</strong>.
-        </p>
+        <div className="p-4 rounded-xl bg-[#f8faf9] border border-[#e2e8e4] space-y-2.5">
+          <p className="text-xs sm:text-sm leading-relaxed text-[#374151] font-sans">
+            Monte Carlo modeling executes iterative pseudo-random sampling across historical infrastructure delays, adjusting for statutory clearance cycles and litigation holding intervals. For corridor <strong className="text-[#1f2937]">{selectedProject.name}</strong>, with an expected delay of <strong className="text-[#1f2937]">+{result?.expectedDelay || selectedProject.predicted_delay_days} days</strong>, there is an estimated <strong className="text-[#1f2937]">{((result?.probabilityExceedsThreshold || 0) * 100).toFixed(0)}%</strong> probability that delay will breach the critical threshold of <strong className="text-[#1f2937]">{params.delayThreshold} days</strong>.
+          </p>
+
+          <div className="pt-2 border-t border-[#e2e8e4] text-xs font-mono text-[#6b7280] flex flex-wrap items-center justify-between gap-2">
+            <span>Statistical Seed: <strong>Pseudorandom Uniform</strong></span>
+            <span>Sample Distribution: <strong>Log-Normal Kernel</strong></span>
+          </div>
+        </div>
       </div>
     </div>
   );

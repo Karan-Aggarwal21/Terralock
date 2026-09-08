@@ -1,3 +1,4 @@
+import React from 'react';
 import { useProject } from '../../context';
 import { RiskBadge } from '../common/RiskBadge';
 import { ChevronDown, FolderGit2 } from 'lucide-react';
@@ -11,43 +12,43 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({ className = ''
 
   if (isLoading && projects.length === 0) {
     return (
-      <div className={`h-10 w-64 bg-slate-100 dark:bg-slate-800 rounded-md animate-pulse flex items-center px-3 ${className}`}>
-        <span className="text-xs text-slate-400 font-mono">Loading Projects...</span>
+      <div className={`h-9 w-48 sm:w-64 bg-[#edf7f1]/50 rounded-lg animate-pulse flex items-center px-3 border border-[#e2e8e4] ${className}`}>
+        <span className="text-xs text-[#64748b] font-mono">Loading Projects...</span>
       </div>
     );
   }
 
   return (
     <div className={`relative flex items-center ${className}`}>
-      <div className="relative w-full max-w-sm sm:max-w-md">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xs focus-within:ring-2 focus-within:ring-slate-500 focus-within:border-slate-500">
-          <FolderGit2 className="w-4 h-4 text-slate-400 shrink-0" />
-          
+      <div className="relative w-full min-w-[200px] sm:min-w-[260px] max-w-xs sm:max-w-sm">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#e2e8e4] bg-white hover:border-[#cbd5e1] focus-within:border-[#244d3b] focus-within:ring-1 focus-within:ring-[#244d3b] shadow-2xs transition-all">
+          <FolderGit2 className="w-3.5 h-3.5 text-[#244d3b] shrink-0" />
+
           <select
             id="global-project-selector"
             aria-label="Global Project Selector"
             value={selectedProjectId}
             onChange={(e) => setSelectedProjectId(e.target.value)}
-            className="w-full bg-transparent text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 outline-none cursor-pointer pr-6 appearance-none font-sans"
+            className="w-full bg-transparent text-xs font-medium text-[#111827] outline-none cursor-pointer pr-6 appearance-none font-sans"
           >
             {projects.map((proj) => (
               <option
                 key={proj.project_id}
                 value={proj.project_id}
-                className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 py-1"
+                className="bg-white text-[#111827] py-1"
               >
                 [{proj.project_id}] {proj.name} ({proj.risk_level})
               </option>
             ))}
           </select>
 
-          <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 pointer-events-none" />
+          <ChevronDown className="w-3.5 h-3.5 text-[#64748b] absolute right-2.5 pointer-events-none" />
         </div>
       </div>
 
       {selectedProject && (
-        <div className="hidden lg:block ml-2.5 shrink-0">
-          <RiskBadge level={selectedProject.risk_level} size="sm" />
+        <div className="hidden sm:block ml-2 shrink-0">
+          <RiskBadge level={selectedProject.risk_level} size="xs" />
         </div>
       )}
     </div>

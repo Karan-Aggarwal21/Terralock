@@ -29,28 +29,28 @@ export function DataTable<T>({
 }: DataTableProps<T>): React.ReactElement {
   if (data.length === 0) {
     return (
-      <div className="py-12 text-center text-xs font-mono text-slate-500 dark:text-slate-400">
+      <div className="py-16 text-center text-xs font-mono text-[#64748b] bg-white rounded-2xl border border-[#e2e8e4]">
         {emptyMessage}
       </div>
     );
   }
 
   return (
-    <div className={`overflow-x-auto ${className}`}>
-      <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
-        <thead className="bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 uppercase font-mono font-semibold text-[11px] border-b border-slate-200 dark:border-slate-800">
+    <div className={`overflow-x-auto bg-white rounded-2xl border border-[#e2e8e4] shadow-xs ${className}`}>
+      <table className="w-full text-left text-xs text-[#374151] font-sans">
+        <thead className="bg-[#f8faf9] text-[#64748b] uppercase font-mono font-semibold text-[11px] border-b border-[#e2e8e4] tracking-wider">
           <tr>
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`py-3.5 px-4 ${col.headerClassName || ''}`}
+                className={`py-4 px-6 ${col.headerClassName || ''}`}
               >
                 {col.header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+        <tbody className="divide-y divide-[#f1f5f3]">
           {data.map((item) => {
             const key = keyExtractor(item);
             const isSelected = selectedKey === key;
@@ -58,12 +58,15 @@ export function DataTable<T>({
               <tr
                 key={key}
                 onClick={() => onRowClick?.(item)}
-                className={`transition-colors ${
-                  onRowClick ? 'cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50' : ''
-                } ${isSelected ? 'bg-emerald-50/50 dark:bg-emerald-950/20' : ''}`}
+                className={`transition-colors ${onRowClick ? 'cursor-pointer hover:bg-[#f8faf9]' : ''
+                  } ${isSelected ? 'bg-[#edf7f1]/50 font-medium' : ''}`}
               >
-                {columns.map((col) => (
-                  <td key={col.key} className={`py-3.5 px-4 ${col.className || ''}`}>
+                {columns.map((col, idx) => (
+                  <td
+                    key={col.key}
+                    className={`py-4 px-6 text-[#111827] ${isSelected && idx === 0 ? 'border-l-4 border-[#244d3b]' : ''
+                      } ${col.className || ''}`}
+                  >
                     {col.render
                       ? col.render(item)
                       : String((item as Record<string, unknown>)[col.key] ?? '')}

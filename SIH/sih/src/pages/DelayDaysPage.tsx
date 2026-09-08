@@ -43,29 +43,32 @@ export const DelayDaysPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Header Navigation Banner */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs">
+      <div className="bg-white border border-[#e2e8e4] rounded-2xl p-6 sm:p-7 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold tracking-wider text-slate-500 uppercase">
-                PREDICTIVE ANALYTICS / SCHEDULE DELAY DAYS (F4)
+          <div className="space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="text-[12px] sm:text-[13px] font-semibold tracking-wider text-[#527568] uppercase">
+                PREDICTIVE ANALYTICS • SCHEDULE DELAY DAYS (F4)
               </span>
               <RiskBadge level={selectedProject.risk_level} size="xs" />
+              <span className="text-[11px] font-mono text-[#4b5563] bg-[#f4f7f5] px-2 py-0.5 rounded border border-[#e2e8e4]">
+                ID: {selectedProject.project_id}
+              </span>
             </div>
 
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#101827] tracking-tight leading-tight">
               {selectedProject.name}
             </h1>
 
-            <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
-              Corridor ID: <strong>{selectedProject.project_id}</strong> • Sector: <strong>{selectedProject.corridor_name || 'Standard Regional Alignment'}</strong>
+            <p className="text-sm text-[#4b5563]">
+              Sector Alignment: <strong className="text-[#101827]">{selectedProject.corridor_name || 'Standard Corridor'}</strong> • State: <strong className="text-[#101827]">{selectedProject.state || 'National'}</strong>
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <Link
               to="/dashboard"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-mono text-slate-700 dark:text-slate-300 transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#f4f7f5] hover:bg-[#e8f0ec] text-xs font-mono font-bold text-[#244d3b] border border-[#e2e8e4] transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Dashboard</span>
@@ -73,21 +76,21 @@ export const DelayDaysPage: React.FC = () => {
 
             <Link
               to="/predictions/delay-reason"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-mono font-medium shadow-xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#244d3b] hover:bg-[#1b3d2e] text-white text-xs font-mono font-bold shadow-xs transition-colors"
             >
-              <span>Delay Reason Analysis</span>
+              <span>Delay Reason (F5)</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
       </div>
 
-      {/* 2. Primary Forecast Section: Reusing PredictionCard from CP1 */}
+      {/* 2. Primary Forecast & Confidence Intervals Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <PredictionCard
-            title="Predicted Acquisition Schedule Delay (F4)"
-            predictionValue={`${selectedProject.predicted_delay_days}`}
+            label="Predicted Acquisition Schedule Delay"
+            predictionValue={`+${selectedProject.predicted_delay_days}`}
             unit="Days"
             range={{
               min: selectedProject.predicted_delay_range.min,
@@ -95,18 +98,20 @@ export const DelayDaysPage: React.FC = () => {
               unit: 'Days',
             }}
             confidence={selectedProject.delay_reason_confidence}
-            reasonText={`Top Delay Driver: ${selectedProject.delay_reason}`}
+            reasonText={`Primary Schedule Driver: ${selectedProject.delay_reason}`}
             badge={<RiskBadge level={selectedProject.risk_level} size="sm" />}
-            icon={<Clock className="w-4 h-4 text-emerald-500" />}
+            icon={<Clock className="w-4 h-4 text-[#244d3b]" />}
             footerContent={
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
-                <span>Monte Carlo 90th Percentile Drift: <strong>+{selectedProject.simulation.p90_delay} Days</strong></span>
+                <span className="text-[#4b5563]">
+                  Monte Carlo 90th Percentile Drift: <strong className="text-[#1f2937]">+{selectedProject.simulation.p90_delay} Days</strong>
+                </span>
                 <Link
                   to="/simulation"
-                  className="text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1 font-semibold"
+                  className="text-[#244d3b] hover:text-[#1b3d2e] inline-flex items-center gap-1 font-bold"
                 >
                   <span>Inspect Simulation Histogram</span>
-                  <ArrowRight className="w-3 h-3" />
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             }
@@ -114,50 +119,56 @@ export const DelayDaysPage: React.FC = () => {
         </div>
 
         {/* Confidence Interval & Schedule Risk Summary */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white border border-[#e2e8e4] rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
-              <BarChart3 className="w-4 h-4 text-slate-500" />
-              <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                Confidence Intervals
+            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#edf2ee]">
+              <BarChart3 className="w-4 h-4 text-[#244d3b]" />
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#244d3b]">
+                Confidence & Range Intervals
               </h3>
             </div>
 
             <div className="space-y-3 font-mono text-xs">
-              <div className="p-2.5 rounded bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] text-slate-400 uppercase block">50% Median Projection</span>
-                <span className="text-base font-bold text-slate-800 dark:text-slate-100">
+              <div className="p-3.5 rounded-xl bg-[#f8faf9] border border-[#e2e8e4]">
+                <span className="text-[10px] text-[#6b7280] uppercase block font-semibold">50% Median Projection</span>
+                <span className="text-lg font-bold text-[#1f2937] block mt-0.5">
                   +{selectedProject.simulation.median_delay} Days
                 </span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">Statistical median across 10k simulations</span>
+                <span className="text-[11px] text-[#6b7280] block mt-0.5 font-sans">Central tendency across 10,000 runs</span>
               </div>
 
-              <div className="p-2.5 rounded bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] text-slate-400 uppercase block">80% Confidence Band</span>
-                <span className="text-base font-bold text-slate-800 dark:text-slate-100">
+              <div className="p-3.5 rounded-xl bg-[#f8faf9] border border-[#e2e8e4]">
+                <span className="text-[10px] text-[#6b7280] uppercase block font-semibold">80% Parametric Confidence Band</span>
+                <span className="text-lg font-bold text-[#1f2937] block mt-0.5">
                   {selectedProject.predicted_delay_range.min} – {selectedProject.predicted_delay_range.max} Days
                 </span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">Interquartile parametric bounds</span>
+                <span className="text-[11px] text-[#6b7280] block mt-0.5 font-sans">Statistical interquartile range</span>
               </div>
 
-              <div className="p-2.5 rounded border" style={{ borderColor: `${riskConfig.colorHex}55`, backgroundColor: riskConfig.bgHex }}>
-                <span className="text-[10px] text-slate-500 uppercase block">90% Extreme Tail Delay</span>
-                <span className="text-base font-bold" style={{ color: riskConfig.colorHex }}>
+              <div
+                className="p-3.5 rounded-xl border"
+                style={{
+                  borderColor: `${riskConfig.colorHex}44`,
+                  backgroundColor: riskConfig.bgHex,
+                }}
+              >
+                <span className="text-[10px] text-[#6b7280] uppercase block font-semibold">90% Extreme Tail Delay (P90)</span>
+                <span className="text-lg font-bold block mt-0.5" style={{ color: riskConfig.colorHex }}>
                   +{selectedProject.simulation.p90_delay} Days
                 </span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">Critical tail risk mitigation ceiling</span>
+                <span className="text-[11px] text-[#6b7280] block mt-0.5 font-sans">Tail risk mitigation threshold</span>
               </div>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 text-[11px] font-mono text-slate-400 flex items-center justify-between">
-            <span>MODEL: REGRESSOR v2.1</span>
-            <span className="text-emerald-500 font-bold">R² = 0.89</span>
+          <div className="mt-5 pt-3.5 border-t border-[#edf2ee] text-[11px] font-mono text-[#6b7280] flex items-center justify-between">
+            <span>REGRESSOR STATUS: STABLE</span>
+            <span className="text-[#244d3b] font-bold">R² = 0.89</span>
           </div>
         </div>
       </div>
 
-      {/* 3. Timeline Visualization Component (§6.4) */}
+      {/* 3. Timeline Visualization Component */}
       <TimelineVisualization
         timeline={selectedProject.timeline}
         predictedDelayDays={selectedProject.predicted_delay_days}
@@ -166,17 +177,24 @@ export const DelayDaysPage: React.FC = () => {
       />
 
       {/* 4. Schedule Impact Qualitative Advisory */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs">
-        <div className="flex items-center gap-2 mb-2">
-          <AlertOctagon className="w-4 h-4 text-slate-500" />
-          <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-            Project Officer Schedule Advisory
+      <div className="bg-white border border-[#e2e8e4] rounded-2xl p-6 sm:p-7 shadow-xs">
+        <div className="flex items-center gap-2 mb-3 pb-3 border-b border-[#edf2ee]">
+          <AlertOctagon className="w-4 h-4 text-[#244d3b]" />
+          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#244d3b]">
+            Executive Schedule & Milestone Advisory
           </h3>
         </div>
 
-        <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300 font-sans">
-          The predicted drift of <strong>{selectedProject.predicted_delay_days} days</strong> will defer physical possession past the contractual baseline milestone. It is strongly recommended to initiate early administrative interventions on <strong>{selectedProject.delay_reason}</strong> to compress the expected schedule delay towards the minimum boundary of <strong>{selectedProject.predicted_delay_range.min} days</strong>.
-        </p>
+        <div className="p-4 rounded-xl bg-[#f8faf9] border border-[#e2e8e4] space-y-2.5">
+          <p className="text-xs sm:text-sm leading-relaxed text-[#374151] font-sans">
+            The predicted drift of <strong className="text-[#1f2937]">+{selectedProject.predicted_delay_days} days</strong> will defer physical land possession past the contractual baseline handover date. It is advised to prioritize early administrative settlement on <strong className="text-[#1f2937]">{selectedProject.delay_reason}</strong> to compress schedule drift towards the minimum threshold of <strong className="text-[#1f2937]">{selectedProject.predicted_delay_range.min} days</strong>.
+          </p>
+
+          <div className="pt-2.5 border-t border-[#e2e8e4] flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-[#6b7280]">
+            <span>Statutory Notification Window: <strong>30-Day Window Active</strong></span>
+            <span className="text-[#244d3b] font-bold">Mitigation Target: &lt; {selectedProject.predicted_delay_range.min} Days</span>
+          </div>
+        </div>
       </div>
     </div>
   );

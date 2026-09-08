@@ -9,6 +9,7 @@ export interface ProjectContextType {
   isLoading: boolean;
   error: string | null;
   refreshProjects: () => Promise<void>;
+  addCustomProject: (project: Project) => void;
 }
 
 export const ProjectContext = createContext<ProjectContextType | undefined>(undefined);

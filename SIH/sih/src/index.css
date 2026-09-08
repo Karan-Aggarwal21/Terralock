@@ -1,6 +1,95 @@
 @import "tailwindcss";
 
-/* index.css */
+@theme {
+  --font-family-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular,
+    "SF Mono", Consolas, monospace;
+}
+
+/* ==========================================================================
+   TERRA LOCK — Centralized Light Enterprise Design System
+   ========================================================================== */
+
+:root {
+  --bg-app: #F7F8F6;
+  --surface: #FFFFFF;
+  --surface-muted: #f4f7f5;
+  --surface-hover: #edf4ef;
+
+  --color-primary: #101827;
+  --color-primary-hover: #1f2937;
+  --color-primary-subtle: #edf7f1;
+  --color-primary-border: #c6e6d2;
+
+  --color-sage: #527568;
+  --color-sage-light: #e8f2ec;
+
+  --color-text-main: #101827;
+  --color-text-body: #374151;
+  --color-text-muted: #64748B;
+
+  --color-border: #E2E7E4;
+  --color-border-subtle: #edf2ee;
+
+  --color-risk-low: #2d7a4f;
+  --color-risk-moderate: #d97706;
+  --color-risk-high: #dc2626;
+  --color-risk-critical: #991b1b;
+
+  --radius-card: 0.875rem;
+  --radius-pill: 9999px;
+
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+
+  /* ==========================================================================
+     TYPOGRAPHY SYSTEM — Manrope (Single Project-Wide Typeface)
+     ========================================================================== */
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace,
+    SFMono-Regular, "SF Mono", Consolas, monospace;
+
+  /* Type scale matching specifications */
+  --text-xs: 0.8125rem;   /* 13px (12-14px eyebrow/labels) */
+  --text-sm: 0.875rem;    /* 14px (14-16px navigation/buttons) */
+  --text-base: 1rem;       /* 16px (15-18px body) */
+  --text-lg: 1.125rem;    /* 18px (18-24px card headings) */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 2rem;       /* 32px (28-36px stats) */
+  --text-4xl: 2.5rem;     /* 40px (36-48px section headings) */
+  --text-5xl: 3.75rem;    /* 60px (56-68px hero headings) */
+
+  /* Font weights */
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+
+  /* Line heights */
+  --lh-hero: 1.05;        /* 0.98 - 1.08 */
+  --lh-section: 1.1;      /* 1.05 - 1.15 */
+  --lh-card: 1.25;        /* 1.2 - 1.3 */
+  --lh-body: 1.6;         /* 1.5 - 1.65 */
+  --lh-tight: 1.2;
+  --lh-snug: 1.35;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.65;
+
+  /* Letter spacing */
+  --ls-hero: -0.03em;     /* ~ -2px */
+  --ls-section: -0.02em;  /* ~ -1px */
+  --ls-card: -0.01em;
+  --ls-eyebrow: 0.12em;   /* 1.5 - 2px */
+  --ls-tight: -0.025em;
+  --ls-snug: -0.015em;
+  --ls-normal: 0;
+  --ls-wide: 0.025em;
+  --ls-wider: 0.05em;
+  --ls-widest: 0.1em;
+}
 
 * {
   margin: 0;
@@ -10,20 +99,63 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background-color: #ffffff;
-  color: #1f2937;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--fw-normal);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-normal);
+  background-color: var(--bg-app);
+  color: var(--color-text-body);
   min-width: 320px;
+}
+
+/* Headings base styles */
+h1 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-extrabold);
+  line-height: var(--lh-hero);
+  letter-spacing: var(--ls-hero);
+  color: var(--color-text-main);
+}
+
+h2 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-section);
+  letter-spacing: var(--ls-section);
+  color: var(--color-text-main);
+}
+
+h3 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-card);
+  letter-spacing: var(--ls-card);
+  color: var(--color-text-main);
+}
+
+h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-card);
+  color: var(--color-text-main);
+}
+
+p {
+  color: var(--color-text-body);
+  line-height: var(--lh-body);
 }
 
 button,
 input,
 textarea,
 select {
-  font: inherit;
+  font-family: var(--font-sans);
 }
 
 button {
@@ -33,4 +165,377 @@ button {
 img {
   max-width: 100%;
   display: block;
+}
+
+::selection {
+  background-color: #d1e7dd;
+  color: #0f291e;
+}
+
+/* ==========================================================================
+   Design System Utility Classes
+   ========================================================================== */
+
+.tl-card {
+  background-color: var(--surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s ease-in-out;
+}
+
+.tl-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+}
+
+.tl-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: background-color 0.15s ease-in-out;
+}
+
+.tl-btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.tl-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary-subtle);
+  color: #1e5637;
+  border: 1px solid var(--color-primary-border);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.tl-btn-secondary:hover {
+  background-color: #e2ece5;
+}
+
+/* ==========================================================================
+   TYPOGRAPHY HIERARCHY CLASSES (Manrope Responsive Typography System)
+   ========================================================================== */
+
+/* 1. Main page / hero headings (Manrope 700-800, Desktop: 56-68px, LH: 0.98-1.08, LS: ~-2px) */
+.tl-heading-hero,
+.tl-heading-1 {
+  font-family: var(--font-sans);
+  font-size: clamp(2.25rem, 5vw, 3.875rem); /* 36px mobile -> 48px tablet -> 62px desktop */
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #101827;
+}
+
+/* 2. Section headings (Manrope 700-750, 36-48px, LH: 1.05-1.15, LS: ~-1px) */
+.tl-heading-section,
+.tl-heading-2 {
+  font-family: var(--font-sans);
+  font-size: clamp(1.75rem, 3.5vw, 2.625rem); /* 28px mobile -> 36px tablet -> 42px desktop */
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #101827;
+}
+
+/* 3. Card / component headings (Manrope 600-700, 18-24px, LH: 1.2-1.3) */
+.tl-heading-card,
+.tl-heading-3 {
+  font-family: var(--font-sans);
+  font-size: clamp(1.125rem, 2vw, 1.375rem); /* 18px -> 22px */
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #101827;
+}
+
+.tl-heading-4 {
+  font-family: var(--font-sans);
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  line-height: 1.25;
+  color: #101827;
+}
+
+.tl-heading-5 {
+  font-family: var(--font-sans);
+  font-size: 1rem; /* 16px */
+  font-weight: 600;
+  line-height: 1.3;
+  color: #101827;
+}
+
+/* 4. Body / descriptive text (Manrope 400-500, 15-18px, LH: 1.5-1.65, dark gray) */
+.tl-body {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem; /* 15px */
+  font-weight: 400;
+  line-height: 1.6;
+  color: #374151; /* Dark gray for comfortable reading */
+}
+
+.tl-body-lg {
+  font-family: var(--font-sans);
+  font-size: 1.0625rem; /* 17px */
+  font-weight: 400;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.tl-body-sm {
+  font-family: var(--font-sans);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 400;
+  line-height: 1.55;
+  color: #4b5563;
+}
+
+.tl-caption {
+  font-family: var(--font-sans);
+  font-size: 0.75rem; /* 12px */
+  font-weight: 500;
+  line-height: 1.4;
+  color: #6b7280;
+}
+
+/* 5. Navigation and buttons (Manrope 500-600, 14-16px, clean and understated) */
+.tl-nav-link,
+.tl-nav-item {
+  font-family: var(--font-sans);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.tl-btn-text {
+  font-family: var(--font-sans);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+/* 6. Statistics / metrics (Numbers: Manrope 700, 28-36px; Labels: Manrope 400-500, 12-14px) */
+.tl-stat-number,
+.tl-data-value {
+  font-family: var(--font-sans);
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem); /* 28px - 36px */
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: #101827;
+}
+
+.tl-data-value-lg {
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 3vw, 2.5rem); /* 32px - 40px */
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+  color: #101827;
+}
+
+.tl-stat-label {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem; /* 13px (12-14px) */
+  font-weight: 500;
+  line-height: 1.4;
+  color: #6b7280;
+}
+
+/* 7. Small labels / eyebrow text (Manrope 500-600, 12-14px, uppercase, letter-spacing 1.5-2px) */
+.tl-eyebrow,
+.tl-label,
+.tl-section-header {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem; /* 13px */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em; /* ~1.5 - 2px */
+  color: #527568;
+}
+
+/* ==========================================================================
+   TERRA LOCK — Landing Page Layout & Spacing
+   ========================================================================== */
+.tl-landing-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+@media (min-width: 768px) {
+  .tl-landing-container {
+    padding-left: 54px;
+    padding-right: 54px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .tl-landing-container {
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+}
+
+.tl-landing-header {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 36px;
+  padding-right: 36px;
+}
+
+.tl-landing-hero {
+  padding-top: 90px;
+  padding-bottom: 80px;
+  margin-bottom: 60px;
+}
+
+.tl-hero-eyebrow-gap {
+  margin-bottom: 20px;
+}
+
+.tl-hero-heading-gap {
+  margin-bottom: 28px;
+}
+
+.tl-hero-para-gap {
+  margin-bottom: 34px;
+}
+
+.tl-hero-stats-gap {
+  margin-top: 80px;
+  padding-top: 32px;
+}
+
+/* Landing Page Buttons */
+.tl-landing-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+.tl-landing-btn-primary {
+  background-color: #527568;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(82, 117, 104, 0.2);
+}
+
+.tl-landing-btn-primary:hover {
+  background-color: #436257;
+  box-shadow: 0 6px 16px rgba(82, 117, 104, 0.3);
+  transform: translateY(-1px);
+}
+
+.tl-landing-btn-secondary {
+  background-color: #ffffff;
+  color: #101827;
+  border: 1px solid #E5E9E6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.tl-landing-btn-secondary:hover {
+  background-color: #FAFBF9;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.tl-landing-btn-white {
+  background-color: #ffffff;
+  color: #244234;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.tl-landing-btn-white:hover {
+  background-color: #FAFBF9;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  transform: translateY(-1px);
+}
+
+/* Landing Page Cards */
+.tl-feature-card {
+  min-height: 330px;
+  padding: 34px 30px;
+  border-radius: 24px;
+  background-color: #ffffff;
+  border: 1px solid #E5E9E6;
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tl-feature-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd5e1;
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08);
+}
+
+.tl-gis-feature-item {
+  padding: 22px 26px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  border: 1px solid #E9ECEB;
+  border-left: 3px solid #527568;
+  transition: all 0.2s ease-in-out;
+}
+
+.tl-gis-feature-item:hover {
+  background-color: #f1f5f2;
+  border-color: #cbd5e1;
+}
+
+.tl-closing-card {
+  padding: 48px 40px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #244234 0%, #172d23 100%);
+  border: 1px solid #3d5d51;
+  color: #ffffff;
+  box-shadow: 0 20px 40px -15px rgba(23, 45, 35, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .tl-closing-card {
+    padding: 64px 56px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tl-closing-card {
+    padding: 76px 68px;
+  }
 }

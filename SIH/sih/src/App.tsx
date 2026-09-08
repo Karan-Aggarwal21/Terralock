@@ -1,7 +1,8 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProjectProvider } from './context';
 import { AppLayout } from './components/layout/AppLayout';
+import { LandingPage } from './pages/LandingPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { RiskAnalysisPage } from './pages/RiskAnalysisPage';
 import { SimulationPage } from './pages/SimulationPage';
@@ -18,8 +19,11 @@ export const App: React.FC = () => {
     <ProjectProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<AppLayout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
+          {/* Landing / Hero Page matching UI Design */}
+          <Route path="/" element={<LandingPage />} />
+
+          {/* Operational Application Views */}
+          <Route element={<AppLayout />}>
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="risk-analysis" element={<RiskAnalysisPage />} />
             <Route path="simulation" element={<SimulationPage />} />

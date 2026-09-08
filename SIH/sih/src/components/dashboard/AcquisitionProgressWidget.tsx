@@ -26,7 +26,7 @@ export const AcquisitionProgressWidget: React.FC<AcquisitionProgressWidgetProps>
 }) => {
   if (isLoading) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs ${className}`}>
+      <div className={`bg-white border border-slate-200/80 rounded-xl p-5 sm:p-6 shadow-xs ${className}`}>
         <LoadingState message="Fetching statutory acquisition milestones..." />
       </div>
     );
@@ -34,7 +34,7 @@ export const AcquisitionProgressWidget: React.FC<AcquisitionProgressWidgetProps>
 
   if (error) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-xs ${className}`}>
+      <div className={`bg-white border border-slate-200/80 rounded-xl p-4 shadow-xs ${className}`}>
         <ErrorState message={error} onRetry={onRetry} />
       </div>
     );
@@ -42,7 +42,7 @@ export const AcquisitionProgressWidget: React.FC<AcquisitionProgressWidgetProps>
 
   if (isEmpty || !stages || stages.length === 0) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-xs ${className}`}>
+      <div className={`bg-white border border-slate-200/80 rounded-xl p-4 shadow-xs ${className}`}>
         <EmptyState message="No statutory acquisition milestones found" />
       </div>
     );
@@ -54,75 +54,92 @@ export const AcquisitionProgressWidget: React.FC<AcquisitionProgressWidgetProps>
   );
 
   return (
-    <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs ${className}`}>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+    <div className={`bg-white border border-[#e2e8e4] rounded-xl p-6 shadow-xs ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-3.5 border-b border-[#f1f5f3]">
         <div>
-          <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-            Statutory Land Acquisition Workflow (RFCTLARR Act)
+          <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-[#111827]">
+            Statutory Land Acquisition Progress Tracker
           </h3>
-          <span className="text-[11px] font-mono text-slate-500">
-            Stage Status: <strong className="text-slate-700 dark:text-slate-300">{status || 'In Progress'}</strong>
-          </span>
+          <p className="text-xs text-[#64748b] font-sans mt-0.5">
+            Right to Fair Compensation and Transparency in Land Acquisition (RFCTLARR 2013) Milestone Pipeline
+          </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-slate-500">Aggregate Progress:</span>
-          <span className="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400">
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <span className="text-[10px] font-mono text-[#64748b] block uppercase">Aggregate Progress</span>
+            <span className="text-sm font-bold font-mono text-[#244d3b]">
+              {totalPercent}% Executed
+            </span>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-[#edf7f1] border border-[#d8e8de] flex items-center justify-center font-mono font-bold text-xs text-[#244d3b]">
             {totalPercent}%
-          </span>
+          </div>
         </div>
       </div>
 
-      {/* Aggregate Bar */}
-      <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden mb-6">
-        <div
-          className="bg-emerald-600 dark:bg-emerald-500 h-full rounded-full transition-all duration-700 ease-out"
-          style={{ width: `${totalPercent}%` }}
-        />
-      </div>
+      {/* Workflow Stage Milestones Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3.5">
+        {stages.map((stg, i) => {
+          const isDone = stg.percent === 100 || stg.status === 'completed';
+          const isInProgress = stg.percent > 0 && stg.percent < 100;
 
-      {/* Milestone Stages Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-        {stages.map((stage, idx) => {
           return (
             <div
-              key={stage.stage}
-              className={`p-3 rounded-lg border text-xs font-mono transition-colors ${
-                stage.status === 'completed'
-                  ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/60'
-                  : stage.status === 'in_progress'
-                  ? 'bg-amber-50/60 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/60'
-                  : 'bg-slate-50 dark:bg-slate-800/30 border-slate-200 dark:border-slate-800 text-slate-400'
-              }`}
+              key={stg.stage}
+              className={`p-4 rounded-xl border transition-all ${isDone
+                  ? 'bg-[#f8faf9] border-[#d8e8de]'
+                  : isInProgress
+                    ? 'bg-[#fefaf4] border-[#fde8cd]'
+                    : 'bg-[#f8faf9]/50 border-[#e2e8e4]'
+                }`}
             >
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] text-slate-400 font-semibold">
-                  STEP 0{idx + 1}
+              <div className="flex items-center justify-between gap-1 mb-2">
+                <span className="text-[10px] font-mono font-bold text-[#64748b]">
+                  STAGE 0{i + 1}
                 </span>
-                {stage.status === 'completed' ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                ) : stage.status === 'in_progress' ? (
-                  <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 animate-pulse" />
+                {isDone ? (
+                  <CheckCircle2 className="w-4 h-4 text-[#244d3b]" />
+                ) : isInProgress ? (
+                  <Clock className="w-4 h-4 text-[#d97706] animate-pulse" />
                 ) : (
-                  <CircleDot className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
+                  <CircleDot className="w-4 h-4 text-[#94a3b8]" />
                 )}
               </div>
 
-              <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate" title={stage.stage}>
-                {stage.stage}
-              </span>
+              <div className="text-xs font-semibold text-[#111827] line-clamp-2 h-8 leading-snug font-sans">
+                {stg.stage}
+              </div>
 
-              <div className="mt-2 flex items-center justify-between text-[11px]">
-                <span className="capitalize text-[10px] text-slate-500">
-                  {stage.status.replace('_', ' ')}
-                </span>
-                <span className="font-bold text-slate-700 dark:text-slate-300">
-                  {stage.percent}%
-                </span>
+              <div className="mt-3">
+                <div className="flex justify-between items-center text-[10px] font-mono mb-1">
+                  <span className="text-[#64748b] capitalize">
+                    {stg.status.replace('_', ' ')}
+                  </span>
+                  <span className="font-bold text-[#111827]">
+                    {stg.percent}%
+                  </span>
+                </div>
+                <div className="w-full bg-[#e2e8e4] h-1.5 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-700 ${isDone
+                        ? 'bg-[#244d3b]'
+                        : isInProgress
+                          ? 'bg-[#d97706]'
+                          : 'bg-[#cbd5e1]'
+                      }`}
+                    style={{ width: `${stg.percent}%` }}
+                  />
+                </div>
               </div>
             </div>
           );
         })}
+      </div>
+
+      <div className="mt-5 pt-3.5 border-t border-[#f1f5f3] flex flex-col sm:flex-row sm:items-center justify-between text-[11px] font-mono text-[#64748b] gap-2">
+        <span>CURRENT CORRIDOR DISPOSITION: <strong className="text-[#111827] font-bold uppercase">{status || 'IN ACQUISITION'}</strong></span>
+        <span>MANDATORY 12-MONTH SECTION 11 SUNSET CLAUSE ACTIVE</span>
       </div>
     </div>
   );

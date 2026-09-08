@@ -90,29 +90,34 @@ export const GisMapPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Header Banner */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs">
+      <div className="bg-white border border-[#e2e8e4] rounded-2xl p-6 sm:p-7 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold tracking-wider text-slate-500 uppercase">
-                GEOSPATIAL INTELLIGENCE & CADASTRAL RISK MAP (F6)
+          <div className="space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="text-[12px] sm:text-[13px] font-semibold tracking-wider text-[#527568] uppercase">
+                GEOSPATIAL INTELLIGENCE • CADASTRAL RISK ALIGNMENT (F6)
               </span>
               {selectedProject && <RiskBadge level={selectedProject.risk_level} size="xs" />}
+              {selectedProject && (
+                <span className="text-[11px] font-mono text-[#4b5563] bg-[#f4f7f5] px-2 py-0.5 rounded border border-[#e2e8e4]">
+                  ID: {selectedProject.project_id}
+                </span>
+              )}
             </div>
 
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              Interactive Infrastructure GIS Command Center
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#101827] tracking-tight leading-tight">
+              Infrastructure GIS & Cadastral Command Center
             </h1>
 
-            <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
-              Corridor right-of-ways, parcel polygons, and 4-tier spatial heatmaps. Active Project: <strong>{selectedProject?.name} [{selectedProject?.project_id}]</strong>
+            <p className="text-sm text-[#4b5563]">
+              Right-of-way alignments, cadastral land parcels, and 4-tier risk heatmaps. Active Alignment: <strong className="text-[#101827]">{selectedProject?.name}</strong>
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="px-3 py-1.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-right">
-              <span className="text-[10px] font-mono text-slate-400 uppercase block">Active Spatial Corridors</span>
-              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 font-mono">
+            <div className="px-3.5 py-2 rounded-xl border border-[#c6e6d2] bg-[#edf7f1] text-right">
+              <span className="text-[10px] font-mono text-[#4b5563] uppercase block font-semibold">Active Corridors</span>
+              <span className="text-xs font-bold text-[#1e5637] font-mono">
                 {filteredProjects.length} of {projects.length} Visible
               </span>
             </div>
@@ -135,13 +140,13 @@ export const GisMapPage: React.FC = () => {
           <MapLegend />
 
           {/* User Guide Advisory */}
-          <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-mono space-y-1.5 shadow-xs">
-            <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-bold">
-              <Info className="w-3.5 h-3.5 text-emerald-500" />
-              <span>GIS Interactions</span>
+          <div className="p-5 rounded-2xl border border-[#e2e8e4] bg-white text-xs font-mono space-y-2 shadow-xs">
+            <div className="flex items-center gap-2 text-[#1f2937] font-bold">
+              <Info className="w-4 h-4 text-[#244d3b]" />
+              <span className="text-xs font-mono uppercase tracking-wider text-[#244d3b]">GIS Spatial Navigation</span>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-sans">
-              Click any corridor node or parcel polygon to inspect detailed cadastral attributes and update the global project selector. Use toolbar buttons to zoom or drag to pan.
+            <p className="text-xs text-[#4b5563] leading-relaxed font-sans">
+              Click any corridor beacon or cadastral parcel to inspect land records and sync the global project selector. Use toolbar controls or mouse drag to pan and zoom.
             </p>
           </div>
         </div>
@@ -152,7 +157,7 @@ export const GisMapPage: React.FC = () => {
             <EmptyState
               title="No Projects Match Active Spatial Filters"
               message="Adjust search keywords, clear risk level filters, or reset state jurisdiction filters to view corridors."
-              className="h-[620px]"
+              className="h-[640px]"
             />
           ) : (
             <MapPanel

@@ -108,7 +108,7 @@ export const ProjectsPage: React.FC = () => {
       key: 'status',
       header: 'Acquisition Status',
       render: (proj) => (
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-[#edf7f1] text-[#244d3b] border border-[#d8e8de]">
           {proj.status || 'In Acquisition'}
         </span>
       ),
@@ -126,7 +126,7 @@ export const ProjectsPage: React.FC = () => {
             setSelectedProjectId(proj.project_id);
             navigate('/dashboard');
           }}
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900 text-[11px] font-mono hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#244d3b] text-white hover:bg-[#1b3b2d] text-[11px] font-mono transition-colors cursor-pointer"
         >
           <span>Dashboard</span>
           <ArrowRight className="w-3 h-3" />
@@ -138,49 +138,49 @@ export const ProjectsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Header Banner */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs">
+      <div className="bg-white border border-[#e2e8e4] rounded-xl p-5 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Database className="w-4 h-4 text-emerald-500" />
-              <span className="text-xs font-mono font-semibold text-slate-500 uppercase">
+              <Database className="w-4 h-4 text-[#244d3b]" />
+              <span className="text-[12px] sm:text-[13px] font-semibold tracking-wider text-[#527568] uppercase">
                 NATIONAL INFRASTRUCTURE REPOSITORY (§6.8)
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#101827] tracking-tight leading-tight">
               Monitored Land Acquisition Projects
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-1">
+            <p className="text-sm text-[#4b5563] mt-1">
               Click any project corridor to activate global context and inspect risk telemetry.
             </p>
           </div>
 
           <div className="text-right">
-            <span className="text-xs font-mono text-slate-500">Repository Total:</span>{' '}
-            <strong className="text-sm font-mono text-slate-800 dark:text-slate-200">
+            <span className="text-xs text-[#6b7280]">Repository Total:</span>{' '}
+            <strong className="text-sm font-bold text-[#101827]">
               {projects.length} Corridors
             </strong>
           </div>
         </div>
 
         {/* 2. Filters & Search bar */}
-        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row gap-3">
+        <div className="mt-4 pt-4 border-t border-[#f1f5f3] flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-[#94a3b8]" />
             <input
               type="text"
               placeholder="Search by ID, name, or state..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-xs rounded border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-mono focus:outline-none focus:border-emerald-500"
+              className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-[#e2e8e4] bg-[#f8faf9] text-[#111827] font-mono placeholder:text-[#94a3b8] focus:outline-none focus:border-[#244d3b]"
             />
           </div>
           <div className="flex items-center gap-2">
-            <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <Filter className="w-3.5 h-3.5 text-[#94a3b8] shrink-0" />
             <select
               value={riskFilter}
               onChange={(e) => setRiskFilter(e.target.value)}
-              className="text-xs font-mono py-1.5 px-2.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 focus:outline-none focus:border-emerald-500"
+              className="text-xs font-mono py-2 px-3 rounded-lg border border-[#e2e8e4] bg-[#f8faf9] text-[#111827] focus:outline-none focus:border-[#244d3b]"
             >
               <option value="ALL">All Risk Tiers</option>
               <option value="LOW">LOW Risk</option>
@@ -193,7 +193,7 @@ export const ProjectsPage: React.FC = () => {
       </div>
 
       {/* 3. Reusable DataTable */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xs overflow-hidden">
+      <div className="bg-white border border-[#e2e8e4] rounded-xl shadow-xs overflow-hidden">
         <DataTable
           data={filteredProjects}
           columns={columns}

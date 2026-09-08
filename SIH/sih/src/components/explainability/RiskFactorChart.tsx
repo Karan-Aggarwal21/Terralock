@@ -4,8 +4,9 @@ import { RiskLevel, getRiskConfig } from '../../constants/risk';
 import { getFactorDetail } from '../../constants/factorExplanations';
 import { Info } from 'lucide-react';
 
-interface RiskFactorChartProps {
-  factors: RiskFactor[];
+export interface RiskFactorChartProps {
+  factors?: RiskFactor[];
+  riskFactors?: RiskFactor[];
   riskLevel: RiskLevel;
   selectedFactorName?: string | null;
   onSelectFactor?: (name: string) => void;
@@ -14,30 +15,32 @@ interface RiskFactorChartProps {
 
 export const RiskFactorChart: React.FC<RiskFactorChartProps> = ({
   factors,
+  riskFactors,
   riskLevel,
   selectedFactorName,
   onSelectFactor,
   className = '',
 }) => {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+  const factorList = factors || riskFactors || [];
   const riskConfig = getRiskConfig(riskLevel);
 
-  const sortedFactors = [...factors].sort((a, b) => b.importance - a.importance);
+  const sortedFactors = [...factorList].sort((a, b) => b.importance - a.importance);
   const maxImportance = Math.max(...sortedFactors.map((f) => f.importance), 0.01);
 
   return (
-    <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs ${className}`}>
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+    <div className={`bg-white border border-[#e2e8e4] rounded-2xl p-6 sm:p-7 shadow-xs ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 pb-4 border-b border-[#f1f5f3]">
         <div>
-          <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-            Risk Factor Contribution Distribution (§6.7)
+          <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-[#111827]">
+            Risk Factor Contribution Distribution
           </h3>
-          <p className="text-[11px] font-mono text-slate-500 mt-0.5">
+          <p className="text-xs text-[#64748b] font-sans mt-0.5">
             Hover or tap any factor to inspect plain-language driver telemetry
           </p>
         </div>
 
-        <span className="text-xs font-mono text-slate-400">
+        <span className="text-[11px] font-mono text-[#64748b] bg-[#f8faf9] px-2.5 py-1 rounded-lg border border-[#e2e8e4] self-start sm:self-auto">
           Normalized Share (100%)
         </span>
       </div>
@@ -53,10 +56,10 @@ export const RiskFactorChart: React.FC<RiskFactorChartProps> = ({
           return (
             <div
               key={factor.name}
-              className={`p-2.5 rounded-lg border transition-all cursor-pointer ${
+              className={`p-4 rounded-xl border transition-all cursor-pointer ${
                 isSelected
-                  ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 shadow-xs'
-                  : 'border-transparent hover:border-slate-200 dark:hover:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                  ? 'border-[#244d3b] bg-[#edf7f1] shadow-xs'
+                  : 'border-[#e2e8e4] hover:border-[#cbd5e1] bg-[#f8faf9]/60 hover:bg-[#f8faf9]'
               }`}
               onClick={() => onSelectFactor && onSelectFactor(factor.name)}
               onMouseEnter={() => setActiveTooltip(factor.name)}
@@ -67,50 +70,51 @@ export const RiskFactorChart: React.FC<RiskFactorChartProps> = ({
               role="button"
               aria-label={`${factor.name}: ${percent}% contribution`}
             >
-              <div className="flex items-center justify-between text-xs font-mono mb-1.5">
-                <div className="flex items-center gap-2 max-w-[75%] truncate">
-                  <span className="text-slate-400 text-[10px] w-4 font-bold">
+              <div className="flex items-center justify-between text-xs font-mono mb-2">
+                <div className="flex items-center gap-2 max-w-[78%] truncate">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-[#e2e8e4] text-[#374151]">
                     #{idx + 1}
                   </span>
-                  <span className="font-semibold text-slate-900 dark:text-slate-100 truncate">
+                  <span className="font-semibold text-[#111827] truncate font-sans text-sm">
                     {factor.name}
                   </span>
-                  <span className="text-[10px] text-slate-400 hidden sm:inline truncate">
-                    ({detail.category})
+                  <span className="text-[11px] text-[#64748b] hidden sm:inline truncate font-sans">
+                    • {detail.category}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-800 dark:text-slate-200">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="font-bold text-[#111827] font-mono text-sm">
                     {percent}%
                   </span>
-                  <Info className="w-3.5 h-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" />
+                  <Info className="w-3.5 h-3.5 text-[#94a3b8] hover:text-[#244d3b]" />
                 </div>
               </div>
 
               {/* Proportional Bar */}
-              <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div className="w-full bg-[#f1f5f3] h-2 rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-700 ease-out"
                   style={{
                     width: barWidth,
-                    backgroundColor: idx === 0 ? riskConfig.colorHex : '#64748b',
+                    backgroundColor: idx === 0 ? riskConfig.colorHex : idx === 1 ? '#244d3b' : '#64748b',
                   }}
                 />
               </div>
 
               {/* Interactive Tooltip Card on Hover / Focus */}
               {(isHovered || isSelected) && (
-                <div className="mt-2.5 p-3 rounded-md bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 text-xs shadow-lg animate-in fade-in duration-150 space-y-1 font-mono">
-                  <div className="flex items-center justify-between text-[10px] text-emerald-400 dark:text-emerald-700 font-bold uppercase">
+                <div className="mt-3 p-3.5 rounded-lg bg-white border border-slate-200/90 text-slate-800 text-xs shadow-md space-y-1.5 font-sans animate-in fade-in duration-150">
+                  <div className="flex items-center justify-between text-[11px] text-[#1e5637] font-semibold uppercase font-mono">
                     <span>{detail.category}</span>
-                    <span>Rank #{idx + 1} Driver</span>
+                    <span className="text-slate-500">Rank #{idx + 1} Causal Driver</span>
                   </div>
-                  <p className="text-[11px] leading-relaxed font-sans text-slate-200 dark:text-slate-800">
+                  <p className="text-xs leading-relaxed text-slate-700">
                     {detail.plainExplanation}
                   </p>
-                  <div className="pt-1 border-t border-slate-800 dark:border-slate-300 text-[10px] text-slate-400 dark:text-slate-600 font-sans">
-                    <strong className="text-slate-300 dark:text-slate-700">Mitigation:</strong> {detail.mitigationStrategy}
+                  <div className="pt-2 border-t border-slate-100 text-[11px] text-slate-600">
+                    <strong className="text-slate-800">Recommended Action:</strong>{' '}
+                    {detail.mitigationStrategy}
                   </div>
                 </div>
               )}
@@ -119,9 +123,9 @@ export const RiskFactorChart: React.FC<RiskFactorChartProps> = ({
         })}
       </div>
 
-      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 text-[11px] font-mono text-slate-500 flex items-center justify-between">
-        <span>EXPLAINABILITY METHOD: ATTRIBUTION INDEX</span>
-        <span>ZERO MACHINE LEARNING JARGON</span>
+      <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-mono text-slate-500 flex items-center justify-between">
+        <span>METHOD: STATISTICAL ATTRIBUTION INDEX</span>
+        <span>ACCESSIBLE PLAIN-LANGUAGE TELEMETRY</span>
       </div>
     </div>
   );

@@ -1,10 +1,13 @@
 import React, { ReactNode } from 'react';
+import { RiskLevel } from '../../constants/risk';
+import { RiskBadge } from './RiskBadge';
 import { LoadingState } from './LoadingState';
 import { ErrorState } from './ErrorState';
 import { EmptyState } from './EmptyState';
 
 export interface PredictionCardProps {
-  title: string;
+  title?: string;
+  label?: string;
   predictionValue?: string | number | null;
   unit?: string;
   range?: {
@@ -15,6 +18,7 @@ export interface PredictionCardProps {
   confidence?: number; // 0 to 1
   reasonText?: string;
   badge?: ReactNode;
+  riskLevel?: RiskLevel;
   icon?: ReactNode;
   footerContent?: ReactNode;
   isLoading?: boolean;
@@ -26,12 +30,14 @@ export interface PredictionCardProps {
 
 export const PredictionCard: React.FC<PredictionCardProps> = ({
   title,
+  label,
   predictionValue,
   unit = '',
   range,
   confidence,
   reasonText,
   badge,
+  riskLevel,
   icon,
   footerContent,
   isLoading = false,
@@ -40,9 +46,11 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({
   isEmpty = false,
   className = '',
 }) => {
+  const displayTitle = label || title || 'Prediction';
+
   if (isLoading) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-xs ${className}`}>
+      <div className={`bg-white border border-[#e2e8e4] rounded-2xl p-6 sm:p-7 shadow-xs ${className}`}>
         <LoadingState message="Computing predictive inference..." />
       </div>
     );
@@ -50,7 +58,7 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({
 
   if (error) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xs overflow-hidden ${className}`}>
+      <div className={`bg-white border border-[#e2e8e4] rounded-2xl shadow-xs overflow-hidden ${className}`}>
         <ErrorState message={error} onRetry={onRetry} />
       </div>
     );
@@ -58,71 +66,81 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({
 
   if (isEmpty || predictionValue === undefined || predictionValue === null) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xs overflow-hidden ${className}`}>
+      <div className={`bg-white border border-[#e2e8e4] rounded-2xl shadow-xs overflow-hidden ${className}`}>
         <EmptyState message="No prediction forecast available" />
       </div>
     );
   }
 
+  const renderedBadge = badge || (riskLevel ? <RiskBadge level={riskLevel} size="xs" /> : null);
+
   return (
-    <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-xs ${className}`}>
-      <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
-        <div className="flex items-center gap-2">
-          {icon && <span className="text-slate-400 dark:text-slate-500">{icon}</span>}
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            {title}
-          </span>
-        </div>
-        {badge && <div>{badge}</div>}
-      </div>
-
-      <div className="mt-4">
-        <div className="flex items-baseline gap-2">
-          <span className="text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white font-mono">
-            {predictionValue}
-          </span>
-          {unit && (
-            <span className="text-base font-semibold text-slate-500 dark:text-slate-400 uppercase font-mono">
-              {unit}
-            </span>
-          )}
-        </div>
-
-        {reasonText && (
-          <p className="mt-2 text-sm font-medium text-slate-700 dark:text-slate-300">
-            {reasonText}
-          </p>
-        )}
-
-        {range && (
-          <div className="mt-3 inline-flex items-center gap-2 px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-xs font-mono text-slate-600 dark:text-slate-300">
-            <span className="text-slate-400 uppercase text-[10px]">Expected Range:</span>
-            <span className="font-semibold">
-              {range.min}–{range.max} {range.unit || unit}
+    <div className={`bg-white border border-[#e2e8e4] rounded-2xl p-6 sm:p-7 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col justify-between ${className}`}>
+      <div>
+        {/* Header: Eyebrow Label + Icon + Badge */}
+        <div className="flex items-center justify-between pb-4 border-b border-[#f1f5f3]">
+          <div className="flex items-center gap-2.5">
+            {icon && (
+              <span className="p-1.5 rounded-lg bg-[#f8faf9] border border-[#e2e8e4] text-[#244d3b]">
+                {icon}
+              </span>
+            )}
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[#64748b]">
+              {displayTitle}
             </span>
           </div>
-        )}
+          {renderedBadge && <div>{renderedBadge}</div>}
+        </div>
 
-        {confidence !== undefined && (
-          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
-            <div className="flex justify-between items-center text-xs mb-1.5 font-mono">
-              <span className="text-slate-500 dark:text-slate-400">Model Confidence</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200">
-                {(confidence * 100).toFixed(0)}%
+        {/* Primary Value Block */}
+        <div className="mt-5">
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#111827] font-mono sm:font-sans">
+              {predictionValue}
+            </span>
+            {unit && (
+              <span className="text-sm font-semibold text-[#64748b] uppercase font-mono tracking-wide">
+                {unit}
+              </span>
+            )}
+          </div>
+
+          {reasonText && (
+            <p className="mt-3 text-xs sm:text-sm font-normal text-[#4b5563] leading-relaxed font-sans">
+              {reasonText}
+            </p>
+          )}
+
+          {range && (
+            <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#edf7f1] border border-[#d8e8de] text-xs font-mono text-[#244d3b]">
+              <span className="text-[#64748b] uppercase text-[10px] font-semibold">Expected Range:</span>
+              <span className="font-bold">
+                {range.min}–{range.max} {range.unit || unit}
               </span>
             </div>
-            <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-              <div
-                className="bg-slate-800 dark:bg-slate-200 h-full rounded-full transition-all duration-500"
-                style={{ width: `${Math.min(Math.max(confidence * 100, 0), 100)}%` }}
-              />
+          )}
+
+          {confidence !== undefined && (
+            <div className="mt-6 pt-4 border-t border-[#f1f5f3]">
+              <div className="flex justify-between items-center text-xs mb-2 font-mono">
+                <span className="text-[#64748b]">Statistical Confidence</span>
+                <span className="font-bold text-[#111827]">
+                  {(confidence * 100).toFixed(0)}%
+                </span>
+              </div>
+              <div className="w-full bg-[#f1f5f3] h-2 rounded-full overflow-hidden">
+                <div
+                  className="bg-[#244d3b] h-full rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min(Math.max(confidence * 100, 0), 100)}%` }}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {footerContent && (
-        <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+        <div className="mt-6 pt-4 border-t border-[#f1f5f3] text-xs text-[#64748b]">
           {footerContent}
         </div>
       )}

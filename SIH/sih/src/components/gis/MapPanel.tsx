@@ -6,11 +6,11 @@ import {
   ZoomIn,
   ZoomOut,
   Maximize2,
-  Crosshair,
   Compass,
+  ArrowUpRight,
 } from 'lucide-react';
 
-interface MapPanelProps {
+export interface MapPanelProps {
   projects: Project[];
   selectedProjectId: string;
   onSelectProject: (id: string) => void;
@@ -79,18 +79,18 @@ export const MapPanel: React.FC<MapPanelProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-[620px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 text-white select-none ${className}`}
+      className={`relative w-full h-[620px] rounded-2xl overflow-hidden border border-[#e2e8e4] bg-[#f8faf9] text-[#111827] select-none shadow-xs ${className}`}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
       style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
     >
-      {/* 1. Map Layer Styling (Satellite / Cartographic Grid) */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px]" />
+      {/* 1. Subtle Cartographic Grid Pattern */}
+      <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#244d3b_1px,transparent_1px)] [background-size:24px_24px]" />
 
       {/* 2. Top-Left Map Layer Mode Selector */}
-      <div className="absolute top-4 left-4 z-20 flex items-center gap-1 p-1 rounded-lg bg-slate-900/90 backdrop-blur-md border border-slate-700/80 shadow-md font-mono text-[11px]">
+      <div className="absolute top-4 left-4 z-20 flex items-center gap-1 p-1 rounded-xl bg-white/95 backdrop-blur-md border border-[#e2e8e4] shadow-sm font-mono text-[11px]">
         {(['cadastral', 'heatmap', 'satellite'] as const).map((layer) => (
           <button
             key={layer}
@@ -99,10 +99,10 @@ export const MapPanel: React.FC<MapPanelProps> = ({
               e.stopPropagation();
               setActiveLayer(layer);
             }}
-            className={`px-2.5 py-1 rounded capitalize font-medium transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg capitalize font-medium transition-colors cursor-pointer ${
               activeLayer === layer
-                ? 'bg-emerald-600 text-white shadow-xs font-semibold'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                ? 'bg-[#244d3b] text-white shadow-2xs font-semibold'
+                : 'text-[#4b5563] hover:text-[#111827] hover:bg-[#f8faf9]'
             }`}
           >
             {layer}
@@ -112,14 +112,14 @@ export const MapPanel: React.FC<MapPanelProps> = ({
 
       {/* 3. Top-Right Telemetry & Compass */}
       <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-        <div className="px-3 py-1 rounded-lg bg-slate-900/90 backdrop-blur-md border border-slate-700/80 font-mono text-[11px] text-slate-300 flex items-center gap-1.5 shadow-md">
-          <Compass className="w-3.5 h-3.5 text-emerald-400" />
-          <span>DATUM: WGS 84 • SCALE: {(zoom * 50).toFixed(0)}k</span>
+        <div className="px-3.5 py-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-[#e2e8e4] font-mono text-[11px] text-[#4b5563] flex items-center gap-2 shadow-sm">
+          <Compass className="w-3.5 h-3.5 text-[#244d3b]" />
+          <span>WGS 84 • SCALE {(zoom * 50).toFixed(0)}k</span>
         </div>
       </div>
 
       {/* 4. Bottom-Right Interactive Zoom & Pan Toolbar */}
-      <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-1.5 p-1 rounded-lg bg-slate-900/90 backdrop-blur-md border border-slate-700/80 shadow-md">
+      <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-1.5 p-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-[#e2e8e4] shadow-sm">
         <button
           type="button"
           id="gis-zoom-in-btn"
@@ -128,7 +128,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({
             e.stopPropagation();
             handleZoomIn();
           }}
-          className="p-2 rounded hover:bg-slate-800 text-slate-200 hover:text-white transition-colors cursor-pointer"
+          className="p-2 rounded-lg hover:bg-[#f4f7f5] text-[#4b5563] hover:text-[#1f2937] transition-colors cursor-pointer"
         >
           <ZoomIn className="w-4 h-4" />
         </button>
@@ -141,7 +141,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({
             e.stopPropagation();
             handleZoomOut();
           }}
-          className="p-2 rounded hover:bg-slate-800 text-slate-200 hover:text-white transition-colors cursor-pointer"
+          className="p-2 rounded-lg hover:bg-[#f4f7f5] text-[#4b5563] hover:text-[#1f2937] transition-colors cursor-pointer"
         >
           <ZoomOut className="w-4 h-4" />
         </button>
@@ -154,7 +154,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({
             e.stopPropagation();
             handleReset();
           }}
-          className="p-2 rounded hover:bg-slate-800 text-slate-200 hover:text-white transition-colors cursor-pointer"
+          className="p-2 rounded-lg hover:bg-[#f4f7f5] text-[#4b5563] hover:text-[#1f2937] transition-colors cursor-pointer"
         >
           <Maximize2 className="w-4 h-4" />
         </button>
@@ -171,20 +171,18 @@ export const MapPanel: React.FC<MapPanelProps> = ({
         }}
       >
         <defs>
-          <radialGradient id="radarScan" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
-          </radialGradient>
+          <filter id="markerShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodOpacity="0.2" />
+          </filter>
         </defs>
 
-        {/* Simplified National Territorial Border Framework */}
+        {/* India National Territorial Border Framework */}
         <path
           d="M 320 80 Q 400 60, 480 90 T 600 130 T 780 180 T 760 280 T 680 340 T 700 420 T 540 580 T 420 540 T 360 420 T 260 300 T 240 180 Z"
-          fill="#0f172a"
-          stroke="#334155"
+          fill="#eaf2ec"
+          stroke="#9dc2ab"
           strokeWidth="1.5"
           strokeDasharray="4 3"
-          opacity="0.6"
         />
 
         {/* Render Each Project on the Map */}
@@ -205,26 +203,26 @@ export const MapPanel: React.FC<MapPanelProps> = ({
               onMouseEnter={() => setHoveredProject(proj)}
               onMouseLeave={() => setHoveredProject(null)}
             >
-              {/* Heatmap Layer Mode Glow */}
+              {/* Heatmap Layer Mode Halo */}
               {activeLayer === 'heatmap' && (
                 <circle
                   cx={pt.x}
                   cy={pt.y}
                   r={isSelected ? 65 : 45}
                   fill={riskConfig.colorHex}
-                  opacity={isSelected ? 0.38 : 0.22}
+                  opacity={isSelected ? 0.35 : 0.2}
                   className="transition-all duration-300"
                 />
               )}
 
-              {/* Right of Way Corridor Alignment Vector */}
+              {/* Right-of-Way Corridor Alignment Vector */}
               <path
                 d={`M ${pt.x - 30} ${pt.y + 15} Q ${pt.x} ${pt.y}, ${pt.x + 35} ${pt.y - 12}`}
                 fill="none"
-                stroke="#64748b"
-                strokeWidth={isSelected ? 10 : 6}
+                stroke="#94a3b8"
+                strokeWidth={isSelected ? 8 : 5}
                 strokeLinecap="round"
-                opacity="0.4"
+                opacity="0.35"
               />
               <path
                 d={`M ${pt.x - 30} ${pt.y + 15} Q ${pt.x} ${pt.y}, ${pt.x + 35} ${pt.y - 12}`}
@@ -252,10 +250,10 @@ export const MapPanel: React.FC<MapPanelProps> = ({
                         key={parcel.parcel_id}
                         points={polyPoints}
                         fill={parcelRisk.colorHex}
-                        fillOpacity={isSelected ? 0.45 : 0.25}
+                        fillOpacity={isSelected ? 0.4 : 0.2}
                         stroke={parcelRisk.colorHex}
                         strokeWidth="1.2"
-                        className="hover:fill-opacity-80 transition-all"
+                        className="hover:fill-opacity-70 transition-all"
                         onClick={(e) => {
                           e.stopPropagation();
                           onSelectProject(proj.project_id);
@@ -267,88 +265,113 @@ export const MapPanel: React.FC<MapPanelProps> = ({
                 </g>
               )}
 
-              {/* Radar Pulsing Epicenter for High / Critical */}
-              {(proj.risk_level === 'CRITICAL' || proj.risk_level === 'HIGH') && (
+              {/* Radar Pulsing Epicenter for Selected or High/Critical */}
+              {(isSelected || proj.risk_level === 'CRITICAL' || proj.risk_level === 'HIGH') && (
                 <circle
                   cx={pt.x}
                   cy={pt.y}
-                  r={isSelected ? 24 : 16}
+                  r={isSelected ? 22 : 16}
                   fill="none"
                   stroke={riskConfig.colorHex}
                   strokeWidth="1.5"
                   className="animate-ping"
-                  opacity="0.7"
+                  opacity="0.6"
                 />
               )}
 
-              {/* Central Marker Beacon */}
+              {/* Central Marker Beacon (Style matching UI Inspiration) */}
               <circle
                 cx={pt.x}
                 cy={pt.y}
-                r={isSelected ? 8 : 6}
+                r={isSelected ? 9 : 7}
                 fill={riskConfig.colorHex}
                 stroke="#ffffff"
-                strokeWidth={isSelected ? 2.5 : 1.5}
-                className="transition-all duration-200"
+                strokeWidth={isSelected ? 2.5 : 2}
+                filter="url(#markerShadow)"
+                className="transition-transform group-hover:scale-125 duration-200"
               />
 
-              {/* Corridor Label Callout */}
-              <g transform={`translate(${pt.x + 12}, ${pt.y - 6})`}>
-                <rect
-                  x="-2"
-                  y="-12"
-                  width={proj.name.length * 5.8 + 24}
-                  height="20"
-                  rx="3"
-                  fill="#020617"
-                  fillOpacity="0.88"
-                  stroke={isSelected ? riskConfig.colorHex : '#334155'}
-                  strokeWidth={isSelected ? 1.5 : 1}
+              {/* Outer selection ring */}
+              {isSelected && (
+                <circle
+                  cx={pt.x}
+                  cy={pt.y}
+                  r={15}
+                  fill="none"
+                  stroke={riskConfig.colorHex}
+                  strokeWidth="1.5"
+                  strokeDasharray="3 2"
+                  className="animate-spin"
+                  style={{ animationDuration: '8s' }}
                 />
-                <text
-                  x="6"
-                  y="2"
-                  className={`text-[10px] font-mono font-bold ${
-                    isSelected ? 'fill-white' : 'fill-slate-300'
-                  }`}
-                >
-                  [{proj.project_id}] {proj.name.slice(0, 18)}...
-                </text>
-              </g>
+              )}
+
+              {/* Text Tag at Normal Zoom */}
+              <text
+                x={pt.x + 12}
+                y={pt.y + 4}
+                className="text-[11px] font-mono font-semibold fill-slate-800 pointer-events-none drop-shadow-xs"
+              >
+                {proj.project_id}
+              </text>
             </g>
           );
         })}
       </svg>
 
-      {/* 6. Bottom-Left Coordinate Readout */}
-      <div className="absolute bottom-4 left-4 z-20 flex items-center gap-3 px-3 py-1.5 rounded-lg bg-slate-900/90 backdrop-blur-md border border-slate-700/80 font-mono text-[11px] text-slate-400 shadow-md">
-        <div className="flex items-center gap-1 text-emerald-400">
-          <Crosshair className="w-3.5 h-3.5" />
-          <span>GIS COORDINATES:</span>
-        </div>
-        {hoveredProject ? (
-          <span className="text-white font-semibold">
-            {hoveredProject.location.lat.toFixed(4)}° N, {hoveredProject.location.lng.toFixed(4)}° E ({hoveredProject.name})
-          </span>
-        ) : (
-          <span>20.5937° N, 78.9629° E (PAN-INDIA MATRIX)</span>
-        )}
-      </div>
+      {/* 6. White Floating Project/Parcel Detail Panel */}
+      {(() => {
+        const displayProject = hoveredProject || projects.find((p) => p.project_id === selectedProjectId) || projects[0] || null;
+        if (!displayProject) return null;
 
-      {/* 7. Quick Hover Callout Card */}
-      {hoveredProject && (
-        <div className="absolute top-16 left-4 z-20 p-3 rounded-lg bg-slate-900/95 backdrop-blur-md border border-slate-700 shadow-xl font-mono text-xs max-w-xs pointer-events-none">
-          <div className="flex items-center justify-between gap-2 mb-1">
-            <span className="font-bold text-white truncate">[{hoveredProject.project_id}] {hoveredProject.name}</span>
-            <RiskBadge level={hoveredProject.risk_level} size="xs" />
+        return (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="absolute bottom-4 left-4 z-20 w-80 sm:w-88 bg-white/98 backdrop-blur-md border border-[#e2e8e4] rounded-2xl p-5 shadow-xl font-sans"
+          >
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-[#718d7c]">
+                {displayProject.project_id} • {displayProject.state || 'National'}
+              </span>
+              <RiskBadge level={displayProject.risk_level} size="xs" />
+            </div>
+
+            <h4 className="text-sm font-semibold text-[#101827] leading-snug truncate font-sans">
+              {displayProject.name}
+            </h4>
+
+            <p className="text-[11px] text-[#6b7280] truncate mt-0.5">
+              {displayProject.corridor_name || 'Standard Regional Alignment'}
+            </p>
+
+            <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#edf2ee] text-xs font-mono">
+              <div className="p-2.5 rounded-xl bg-[#f8faf9] border border-[#e2e8e4]">
+                <span className="text-[10px] text-[#6b7280] block uppercase font-semibold">Predicted Delay</span>
+                <span className="font-bold text-[#1f2937] text-sm block mt-0.5">
+                  +{displayProject.predicted_delay_days} Days
+                </span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-[#f8faf9] border border-[#e2e8e4]">
+                <span className="text-[10px] text-[#6b7280] block uppercase font-semibold">Delay Prob</span>
+                <span className="font-bold text-sm block mt-0.5" style={{ color: getRiskConfig(displayProject.risk_level).colorHex }}>
+                  {(displayProject.delay_probability * 100).toFixed(1)}%
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-3 flex items-center justify-between gap-2">
+              <button
+                type="button"
+                onClick={() => onOpenParcelModal(displayProject)}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-[#244d3b] hover:bg-[#1b3d2e] text-white text-xs font-mono font-bold transition-colors cursor-pointer shadow-2xs"
+              >
+                <span>Cadastral Parcels ({displayProject.parcels?.length || 0})</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
-          <div className="text-[11px] text-slate-400 space-y-0.5">
-            <div>Delay Prob: <strong className="text-white">{(hoveredProject.delay_probability * 100).toFixed(1)}%</strong></div>
-            <div>Expected Drift: <strong className="text-white">{hoveredProject.predicted_delay_days} Days</strong></div>
-            <div className="truncate text-[10px] text-slate-400">Primary: {hoveredProject.delay_reason}</div>
-          </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };

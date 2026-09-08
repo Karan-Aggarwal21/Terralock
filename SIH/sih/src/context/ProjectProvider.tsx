@@ -60,6 +60,11 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = ({ children })
     setSelectedProjectIdState(id);
   }, []);
 
+  const addCustomProject = useCallback((newProject: Project) => {
+    setProjects((prev) => [newProject, ...prev.filter((p) => p.project_id !== newProject.project_id)]);
+    setSelectedProjectIdState(newProject.project_id);
+  }, []);
+
   const selectedProject = projects.find((p) => p.project_id === selectedProjectId) || null;
 
   const contextValue = React.useMemo(
@@ -71,8 +76,9 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = ({ children })
       isLoading,
       error,
       refreshProjects,
+      addCustomProject,
     }),
-    [projects, selectedProjectId, selectedProject, setSelectedProjectId, isLoading, error, refreshProjects]
+    [projects, selectedProjectId, selectedProject, setSelectedProjectId, isLoading, error, refreshProjects, addCustomProject]
   );
 
   return (

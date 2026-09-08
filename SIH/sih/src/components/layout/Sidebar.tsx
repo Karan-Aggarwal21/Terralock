@@ -12,7 +12,7 @@ import {
   ChevronDown,
   ChevronRight,
   X,
-  Shield,
+  Hexagon,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -81,7 +81,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Mobile / Tablet Overlay Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-xs lg:hidden"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -89,22 +89,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-slate-900 text-slate-100 flex flex-col border-r border-slate-800 transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-white text-[#111827] flex flex-col border-r border-[#e2e8e4] transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Brand Header */}
-        <div className="flex items-center justify-between h-16 px-5 border-b border-slate-800">
+        <div className="flex items-center justify-between h-16 px-5 border-b border-[#e2e8e4]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-md bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
-              <Shield className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-lg bg-[#244d3b] flex items-center justify-center text-white shadow-xs">
+              <Hexagon className="w-4 h-4 fill-white/20" />
             </div>
             <div>
-              <span className="font-bold tracking-wider text-white font-mono text-sm">
+              <span className="font-bold tracking-tight text-[#111827] font-sans text-sm">
                 TERRA LOCK
               </span>
-              <span className="block text-[10px] text-slate-400 font-mono tracking-wide uppercase">
-                Risk Analytics Core
+              <span className="block text-[10px] text-[#244d3b] font-mono tracking-wide uppercase font-semibold">
+                Land Intelligence Core
               </span>
             </div>
           </div>
@@ -112,7 +112,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             type="button"
             onClick={onClose}
             aria-label="Close Sidebar"
-            className="lg:hidden p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-800"
+            className="lg:hidden p-1.5 rounded-lg text-[#64748b] hover:text-[#111827] hover:bg-[#f1f5f3]"
           >
             <X className="w-5 h-5" />
           </button>
@@ -127,31 +127,31 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   <button
                     type="button"
                     onClick={() => setPredictionsOpen(!predictionsOpen)}
-                    className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium rounded-md text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors"
+                    className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-[#374151] hover:text-[#101827] hover:bg-[#f8faf9] transition-colors cursor-pointer"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5">
                       {item.icon}
                       <span>{item.label}</span>
                     </div>
                     {predictionsOpen ? (
-                      <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                      <ChevronDown className="w-3.5 h-3.5 text-[#64748b]" />
                     ) : (
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                      <ChevronRight className="w-3.5 h-3.5 text-[#64748b]" />
                     )}
                   </button>
 
                   {predictionsOpen && (
-                    <div className="pl-9 pr-2 space-y-1">
+                    <div className="pl-8 pr-2 space-y-1">
                       {item.children.map((child) => (
                         <NavLink
                           key={child.path}
                           to={child.path}
                           onClick={onClose}
                           className={({ isActive }) =>
-                            `block px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            `block px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
                               isActive
-                                ? 'bg-emerald-600/20 text-emerald-400 font-semibold border-l-2 border-emerald-500'
-                                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                                ? 'bg-[#edf7f1] text-[#244d3b] border border-[#d8e8de] font-semibold'
+                                : 'text-[#4b5563] hover:text-[#101827] hover:bg-[#f8faf9]'
                             }`
                           }
                         >
@@ -166,14 +166,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
             return (
               <NavLink
-                key={item.path}
+                key={item.label}
                 to={item.path!}
                 onClick={onClose}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 text-xs font-medium rounded-md transition-colors ${
+                  `flex items-center gap-2.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                     isActive
-                      ? 'bg-emerald-600 text-white font-semibold shadow-xs'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
+                      ? 'bg-[#edf7f1] text-[#244d3b] border border-[#d8e8de] font-semibold'
+                      : 'text-[#4b5563] hover:text-[#101827] hover:bg-[#f8faf9]'
                   }`
                 }
               >
@@ -185,12 +185,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </nav>
 
         {/* System Meta Footer */}
-        <div className="p-4 border-t border-slate-800 text-[11px] font-mono text-slate-400 space-y-1">
+        <div className="p-4 border-t border-[#e2e8e4] text-[11px] font-mono text-[#64748b] space-y-1 bg-[#f8faf9]">
           <div className="flex items-center justify-between">
             <span>PLATFORM</span>
-            <span className="text-emerald-400 font-semibold">ONLINE</span>
+            <span className="text-[#244d3b] font-semibold">ONLINE</span>
           </div>
-          <div className="flex items-center justify-between text-slate-500">
+          <div className="flex items-center justify-between text-[#64748b]">
             <span>MODEL ENGINE</span>
             <span>v2.1 ML-X</span>
           </div>

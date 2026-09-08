@@ -1,13 +1,20 @@
 import React, { ReactNode } from 'react';
+import { RiskLevel } from '../../constants/risk';
+import { RiskBadge } from './RiskBadge';
 import { ErrorState } from './ErrorState';
 import { EmptyState } from './EmptyState';
 
 export interface KpiCardProps {
-  title: string;
+  label?: string;
+  title?: string;
   value?: string | number | null;
+  supportingText?: string | ReactNode;
   subtext?: string | ReactNode;
+  riskLevel?: RiskLevel;
   badge?: ReactNode;
   icon?: ReactNode;
+  action?: ReactNode;
+  link?: ReactNode;
   trend?: {
     value: string;
     isPositive?: boolean;
@@ -20,14 +27,24 @@ export interface KpiCardProps {
   emptyMessage?: string;
   className?: string;
   highlightBorderColor?: string;
+  isCategorical?: boolean;
+  secondaryMetric?: {
+    label: string;
+    value: string | number;
+  };
 }
 
 export const KpiCard: React.FC<KpiCardProps> = ({
+  label,
   title,
   value,
+  supportingText,
   subtext,
+  riskLevel,
   badge,
-  icon,
+  icon: _icon,
+  action,
+  link,
   trend,
   isLoading = false,
   error = null,
@@ -36,80 +53,124 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   emptyMessage,
   className = '',
   highlightBorderColor,
+  isCategorical = false,
+  secondaryMetric,
 }) => {
+  const displayLabel = label || title || 'Metric';
+  const displaySubtext = supportingText || subtext;
+  const displayAction = action || link;
+
   if (isLoading) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs ${className}`}>
+      <div className={`bg-white border border-[#E2E7E4] rounded-xl p-5 sm:p-6 shadow-xs ${className}`}>
         <div className="flex items-center justify-between mb-3">
-          <div className="h-3.5 w-24 bg-slate-200 dark:bg-slate-800 rounded animate-pulse" />
-          <div className="h-4 w-4 bg-slate-200 dark:bg-slate-800 rounded-full animate-pulse" />
+          <div className="h-3 w-28 bg-[#f1f5f3] rounded animate-pulse" />
+          <div className="h-4 w-4 bg-[#f1f5f3] rounded-full animate-pulse" />
         </div>
-        <div className="h-8 w-32 bg-slate-200 dark:bg-slate-800 rounded animate-pulse mb-3" />
-        <div className="h-3 w-40 bg-slate-200 dark:bg-slate-800 rounded animate-pulse" />
+        <div className="h-10 w-32 bg-[#f1f5f3] rounded animate-pulse mb-3" />
+        <div className="h-3 w-40 bg-[#f1f5f3] rounded animate-pulse" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xs overflow-hidden ${className}`}>
-        <ErrorState message={error} onRetry={onRetry} className="p-4" />
+      <div className={`bg-white border border-[#E2E7E4] rounded-xl p-5 sm:p-6 shadow-xs overflow-hidden ${className}`}>
+        <ErrorState message={error} onRetry={onRetry} className="p-2" />
       </div>
     );
   }
 
   if (isEmpty || value === undefined || value === null) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xs overflow-hidden ${className}`}>
-        <EmptyState message={emptyMessage || `No data for ${title}`} className="p-4" />
+      <div className={`bg-white border border-[#E2E7E4] rounded-xl p-5 sm:p-6 shadow-xs overflow-hidden ${className}`}>
+        <EmptyState message={emptyMessage || `No data for ${displayLabel}`} className="p-2" />
       </div>
     );
   }
 
   const borderStyle = highlightBorderColor
-    ? { borderLeftWidth: '4px', borderLeftColor: highlightBorderColor }
+    ? { borderLeftWidth: '3px', borderLeftColor: highlightBorderColor }
     : {};
+
+  const renderedBadge = badge || (riskLevel ? <RiskBadge level={riskLevel} size="xs" /> : null);
 
   return (
     <div
-      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs transition-all hover:border-slate-300 dark:hover:border-slate-700 flex flex-col justify-between ${className}`}
+      className={`bg-white border border-[#E2E7E4] rounded-xl p-6 sm:p-7 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_16px_-4px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between ${className}`}
       style={borderStyle}
     >
-      <div>
-        <div className="flex items-center justify-between gap-2 mb-2">
-          <span className="text-[11px] uppercase tracking-wider font-semibold font-mono text-slate-500 dark:text-slate-400 truncate">
-            {title}
+      <div className="space-y-3 flex flex-col items-center text-center">
+        {/* 1. Uppercase eyebrow label (12–13px) - centralized, no icons */}
+        <div className="w-full flex items-center justify-center">
+          <span className="text-[12px] sm:text-[13px] uppercase tracking-wider font-semibold font-sans text-[#527568]">
+            {displayLabel}
           </span>
-          {icon && (
-            <span className="text-slate-400 dark:text-slate-500 shrink-0">
-              {icon}
-            </span>
-          )}
         </div>
 
-        <div className="flex items-baseline gap-2 flex-wrap mt-1">
-          <span className="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-mono">
-            {value}
-          </span>
-          {badge && <div className="shrink-0">{badge}</div>}
-        </div>
+        {/* 2. Categorical vs Numerical Content */}
+        {isCategorical ? (
+          <div className="w-full flex flex-col items-center">
+            {/* Categorical Reason: reduced by ~1/4 to 20-22px, centralized */}
+            <div className="text-[20px] sm:text-[22px] font-bold text-[#101827] leading-[1.2] tracking-[-0.015em] font-sans break-words my-2 text-center">
+              {value}
+            </div>
+
+            {/* Secondary Metric e.g. Engine Confidence 60% */}
+            {secondaryMetric && (
+              <div className="mt-3 pt-2.5 border-t border-[#E2E7E4]/70 w-full text-center">
+                <span className="text-[11px] sm:text-[12px] font-semibold uppercase tracking-wider text-[#64748B] block font-sans">
+                  {secondaryMetric.label}
+                </span>
+                <span className="text-lg sm:text-xl font-bold text-[#101827] font-sans mt-0.5 block">
+                  {secondaryMetric.value}
+                </span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="w-full flex flex-col items-center">
+            {/* Numerical KPI: reduced by ~1/4 to 30-33px, centralized */}
+            <div className="flex flex-col items-center justify-center gap-1.5 my-1">
+              <span className="text-[30px] sm:text-[33px] font-bold tracking-tight text-[#101827] font-sans leading-none text-center">
+                {value}
+              </span>
+              {renderedBadge && <div className="shrink-0 mt-0.5">{renderedBadge}</div>}
+            </div>
+
+            {/* KPI Description: 11–12px, centralized */}
+            {displaySubtext && (
+              <p className="text-[11px] sm:text-[12px] text-[#64748B] font-sans leading-relaxed mt-2 text-center max-w-[220px]">
+                {displaySubtext}
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
-      {(subtext || trend) && (
-        <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-          {subtext && <div className="truncate">{subtext}</div>}
-          {trend && (
-            <span
-              className={`shrink-0 font-mono text-[11px] ${
-                trend.neutral
-                  ? 'text-slate-500'
-                  : trend.isPositive
-                  ? 'text-emerald-600 dark:text-emerald-400'
-                  : 'text-rose-600 dark:text-rose-400'
-              }`}
-            >
-              {trend.value}
-            </span>
+      {/* 3. Action / Link & Optional Trend */}
+      {(trend || displayAction) && (
+        <div className="mt-4 pt-3 border-t border-[#E2E7E4] flex items-center justify-between gap-2 text-[12px] sm:text-[13px] font-sans">
+          <div>
+            {trend && (
+              <span
+                className={`font-mono text-[11px] px-2 py-0.5 rounded-md ${
+                  trend.neutral
+                    ? 'text-[#64748B] bg-[#F7F8F6] border border-[#E2E7E4]'
+                    : trend.isPositive
+                      ? 'text-[#2D7A4F] bg-[#EDF7F1] border border-[#C6E6D2]'
+                      : 'text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA]'
+                }`}
+              >
+                {trend.value}
+              </span>
+            )}
+          </div>
+
+          {displayAction && (
+            <div className="text-[12px] sm:text-[13px] text-[#527568] font-semibold hover:text-[#436257] ml-auto">
+              {displayAction}
+            </div>
           )}
         </div>
       )}

@@ -39,7 +39,7 @@ export const GisMapSummary: React.FC<GisMapSummaryProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs ${className}`}>
+      <div className={`bg-white border border-slate-200/80 rounded-xl p-5 sm:p-6 shadow-xs ${className}`}>
         <LoadingState message="Connecting to GIS spatial raster layer..." />
       </div>
     );
@@ -47,7 +47,7 @@ export const GisMapSummary: React.FC<GisMapSummaryProps> = ({
 
   if (error) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-xs ${className}`}>
+      <div className={`bg-white border border-slate-200/80 rounded-xl p-4 shadow-xs ${className}`}>
         <ErrorState message={error} onRetry={onRetry} />
       </div>
     );
@@ -55,7 +55,7 @@ export const GisMapSummary: React.FC<GisMapSummaryProps> = ({
 
   if (isEmpty || !location) {
     return (
-      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-xs ${className}`}>
+      <div className={`bg-white border border-slate-200/80 rounded-xl p-4 shadow-xs ${className}`}>
         <EmptyState message="No geospatial coordinates registered for this project" />
       </div>
     );
@@ -64,112 +64,93 @@ export const GisMapSummary: React.FC<GisMapSummaryProps> = ({
   const riskConfig = getRiskConfig(riskLevel);
 
   return (
-    <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs flex flex-col justify-between ${className}`}>
-      <div className="flex items-center justify-between mb-4">
+    <div className={`bg-white border border-[#e2e8e4] rounded-xl p-6 shadow-xs flex flex-col justify-between ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3.5 border-b border-[#f1f5f3]">
         <div>
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-emerald-500" />
-            <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-              GIS Spatial Risk Footprint (F6)
+            <MapPin className="w-4 h-4 text-[#244d3b]" />
+            <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-[#111827]">
+              GIS Spatial Risk Footprint
             </h3>
           </div>
-          <span className="text-[11px] font-mono text-slate-400 block mt-0.5">
-            Cadastral Coordinates: {location.lat.toFixed(4)}° N, {location.lng.toFixed(4)}° E
+          <span className="text-[11px] font-mono text-[#64748b] block mt-0.5">
+            {corridorName ? `${corridorName} • ` : ''}Coordinates: {location.lat.toFixed(4)}° N, {location.lng.toFixed(4)}° E
           </span>
         </div>
 
         <Link
           to="/gis-map"
-          className="inline-flex items-center gap-1 text-[11px] font-mono font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f8faf9] border border-[#e2e8e4] hover:bg-[#edf7f1] text-xs font-mono font-semibold text-[#244d3b] transition-colors self-start sm:self-auto"
         >
-          <span>Interactive GIS</span>
+          <span>Interactive GIS (F6)</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 
-      {/* Styled GIS Spatial Preview Visualizer */}
-      <div className="relative w-full h-44 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 flex items-center justify-center">
-        {/* Radar & Cartographic Grid Background */}
-        <div className="absolute inset-0 opacity-25 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]" />
-        
-        {/* Synthetic Cadastral Boundary Poly */}
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 180">
-          <defs>
-            <linearGradient id="polyGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor={riskConfig.colorHex} stopOpacity="0.45" />
-              <stop offset="100%" stopColor={riskConfig.colorHex} stopOpacity="0.1" />
-            </linearGradient>
-          </defs>
+      {/* Cartographic preview canvas */}
+      <div className="relative h-48 w-full bg-[#f8faf9] rounded-xl border border-[#e2e8e4] overflow-hidden flex items-center justify-center">
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#244d3b_1px,transparent_1px)] [background-size:16px_16px]" />
 
-          {/* Acquisition Right of Way Buffer */}
-          <path
-            d="M 30 140 Q 140 100, 220 110 T 370 40"
-            fill="none"
-            stroke="#475569"
-            strokeWidth="28"
-            strokeLinecap="round"
-            strokeOpacity="0.3"
-          />
+        {/* Concentric Radar Circles */}
+        <div className="absolute w-44 h-44 rounded-full border border-[#e2e8e4] opacity-80" />
+        <div className="absolute w-28 h-28 rounded-full border border-[#cbd5e1] opacity-60" />
+        <div className="absolute w-12 h-12 rounded-full border border-[#244d3b]/30" />
 
-          {/* Central Corridor Alignment */}
-          <path
-            d="M 30 140 Q 140 100, 220 110 T 370 40"
-            fill="none"
-            stroke={riskConfig.colorHex}
-            strokeWidth="3.5"
-            strokeDasharray="6 3"
-          />
+        {/* Crosshair Lines */}
+        <div className="absolute inset-x-0 h-px bg-[#e2e8e4]" />
+        <div className="absolute inset-y-0 w-px bg-[#e2e8e4]" />
 
-          {/* Parcel Polygon At Risk */}
-          <polygon
-            points="180,75 250,85 240,140 170,130"
-            fill="url(#polyGrad)"
-            stroke={riskConfig.colorHex}
-            strokeWidth="1.5"
-          />
-
-          {/* Risk Epicenter Radar Pulsing Ring */}
-          <circle cx="210" cy="110" r="14" fill="none" stroke={riskConfig.colorHex} strokeWidth="1.5" className="animate-ping" opacity="0.6" />
-          <circle cx="210" cy="110" r="6" fill={riskConfig.colorHex} stroke="#ffffff" strokeWidth="1.5" />
-        </svg>
-
-        {/* Floating Spatial Badges */}
-        <div className="absolute top-3 left-3 flex items-center gap-2 max-w-[70%]">
-          <RiskBadge level={riskLevel} size="xs" />
-          <span className="px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur-xs border border-slate-700 text-[10px] font-mono text-slate-300 truncate">
-            {corridorName || state || 'National Corridor'}
-          </span>
+        {/* Active Project Blip */}
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="relative flex items-center justify-center">
+            <span
+              className="absolute w-8 h-8 rounded-full animate-ping opacity-60"
+              style={{ backgroundColor: riskConfig.colorHex }}
+            />
+            <span
+              className="relative w-4 h-4 rounded-full border-2 border-white shadow-md"
+              style={{ backgroundColor: riskConfig.colorHex }}
+            />
+          </div>
+          <div className="mt-2 px-3 py-1 rounded-lg bg-white/95 backdrop-blur-sm border border-[#e2e8e4] shadow-xs font-mono text-[10px] font-bold text-[#111827]">
+            {location.lat.toFixed(2)}°N, {location.lng.toFixed(2)}°E
+          </div>
         </div>
 
-        <div className="absolute bottom-3 right-3 flex items-center gap-2">
-          <div className="px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur-xs border border-slate-700 text-[10px] font-mono text-emerald-400 flex items-center gap-1">
-            <Compass className="w-3 h-3" />
-            <span>GEO-BOUND 1:50,000</span>
-          </div>
+        {/* Top-Right Compass Datum */}
+        <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-white/95 border border-[#e2e8e4] text-[10px] font-mono text-[#64748b] flex items-center gap-1 shadow-2xs">
+          <Compass className="w-3 h-3 text-[#244d3b]" />
+          <span>WGS 84</span>
         </div>
       </div>
 
-      {/* Corridor Attributes Grid */}
-      <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 text-xs font-mono">
-        <div>
-          <span className="text-[10px] text-slate-400 uppercase block">Land Target</span>
-          <span className="font-semibold text-slate-800 dark:text-slate-200">
-            {landRequiredHa ? `${landRequiredHa} ha` : '—'}
+      {/* Corridor Summary Badges */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4 pt-3.5 border-t border-[#f1f5f3] text-xs font-mono">
+        <div className="p-2.5 rounded-lg bg-[#f8faf9] border border-[#e2e8e4]">
+          <span className="text-[10px] text-[#64748b] block uppercase">Region</span>
+          <span className="font-semibold text-[#111827] truncate block mt-0.5">
+            {state || 'National'}{status ? ` • ${status}` : ''}
           </span>
         </div>
 
-        <div>
-          <span className="text-[10px] text-slate-400 uppercase block">Sanctioned Outlay</span>
-          <span className="font-semibold text-slate-800 dark:text-slate-200">
-            {totalBudgetCr ? `₹${totalBudgetCr} Cr` : '—'}
+        <div className="p-2.5 rounded-lg bg-[#f8faf9] border border-[#e2e8e4]">
+          <span className="text-[10px] text-[#64748b] block uppercase">Land Scope</span>
+          <span className="font-semibold text-[#111827] truncate block mt-0.5">
+            {landRequiredHa ? `${landRequiredHa} Ha` : 'N/A'}
           </span>
         </div>
 
-        <div>
-          <span className="text-[10px] text-slate-400 uppercase block">Acquisition Status</span>
-          <span className="font-semibold text-slate-800 dark:text-slate-200 truncate block">
-            {status || 'In Progress'}
+        <div className="p-2.5 rounded-lg bg-[#f8faf9] border border-[#e2e8e4]">
+          <span className="text-[10px] text-[#64748b] block uppercase">Budget</span>
+          <span className="font-semibold text-[#111827] truncate block mt-0.5">
+            {totalBudgetCr ? `₹${totalBudgetCr} Cr` : 'N/A'}
           </span>
+        </div>
+
+        <div className="p-2.5 rounded-lg bg-[#f8faf9] border border-[#e2e8e4] flex flex-col justify-center">
+          <span className="text-[10px] text-[#64748b] block uppercase mb-1">Risk Level</span>
+          <RiskBadge level={riskLevel} size="xs" />
         </div>
       </div>
     </div>

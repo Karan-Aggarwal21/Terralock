@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, AlertCircle, ArrowRight, ShieldAlert } from 'lucide-react';
+import { Calendar, ArrowRight } from 'lucide-react';
 import { ProjectTimeline } from '../../types/project';
 import { RiskLevel, getRiskConfig } from '../../constants/risk';
 
@@ -33,139 +33,106 @@ export const TimelineVisualization: React.FC<TimelineVisualizationProps> = ({
   const p90ExtraWidth = `${((p90DelayDays - predictedDelayDays) / maxDays) * 100}%`;
 
   return (
-    <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-xs ${className}`}>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-slate-100 dark:border-slate-800">
+    <div className={`bg-white border border-[#e2e8e4] rounded-2xl p-6 sm:p-7 shadow-xs ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[#edf2ee]">
         <div>
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-            <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
+            <Calendar className="w-4 h-4 text-[#244d3b]" />
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#244d3b]">
               Project Schedule Variance & Timeline Drift
             </h3>
           </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-            Planned Contract Milestone vs. Machine Learning Expected vs. 90th Percentile Tail Risk
+          <p className="text-xs text-[#4b5563] font-sans mt-1">
+            Contractual Baseline Target vs. Machine Learning Expected Drift vs. 90th Percentile Tail Risk
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono">
-          <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+          <span className="px-3 py-1 rounded-lg bg-[#f4f7f5] text-[#374151] border border-[#e2e8e4] font-medium">
             Baseline: {baselineDays} Days
           </span>
-          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-          <span className="px-2 py-0.5 rounded font-bold" style={{ color: riskConfig.colorHex, backgroundColor: riskConfig.bgHex }}>
+          <ArrowRight className="w-3.5 h-3.5 text-[#9ca3af]" />
+          <span
+            className="px-3 py-1 rounded-lg font-bold border"
+            style={{
+              color: riskConfig.colorHex,
+              backgroundColor: riskConfig.bgHex,
+              borderColor: `${riskConfig.colorHex}33`,
+            }}
+          >
             Forecast: {expectedTotalDays} Days (+{predictedDelayDays}d)
           </span>
         </div>
       </div>
 
       {/* Visual Gantt Bar Track */}
-      <div className="space-y-4 my-2">
-        <div className="relative pt-6 pb-2">
+      <div className="space-y-6 my-2">
+        <div className="relative pt-7 pb-3">
           {/* Milestone Pointer: Planned Completion */}
           <div
-            className="absolute top-0 flex flex-col items-center -translate-x-1/2"
+            className="absolute top-0 -translate-x-1/2 flex flex-col items-center"
             style={{ left: baselineWidth }}
           >
-            <span className="text-[9px] font-mono font-bold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
-              Planned Completion
+            <span className="text-[10px] font-mono text-[#4b5563] font-bold uppercase tracking-wider whitespace-nowrap bg-white px-1.5 py-0.5 rounded border border-[#e2e8e4] shadow-2xs">
+              Planned Target ({baselineDays}d)
             </span>
-            <div className="w-1.5 h-1.5 bg-slate-500 rounded-full my-0.5" />
+            <div className="w-0.5 h-3 bg-[#6b7280] mt-0.5" />
           </div>
 
-          {/* Milestone Pointer: Expected Delay */}
-          <div
-            className="absolute top-0 flex flex-col items-center -translate-x-1/2"
-            style={{ left: `${((baselineDays + predictedDelayDays) / maxDays) * 100}%` }}
-          >
-            <span className="text-[9px] font-mono font-bold uppercase tracking-wider" style={{ color: riskConfig.colorHex }}>
-              +{predictedDelayDays}d Expected
-            </span>
-            <div className="w-1.5 h-1.5 rounded-full my-0.5" style={{ backgroundColor: riskConfig.colorHex }} />
-          </div>
-
-          {/* Milestone Pointer: P90 Tail */}
-          <div
-            className="absolute top-0 flex flex-col items-center -translate-x-1/2"
-            style={{ left: `${(p90TotalDays / maxDays) * 100}%` }}
-          >
-            <span className="text-[9px] font-mono font-bold uppercase text-rose-500 tracking-wider">
-              P90: +{p90DelayDays}d
-            </span>
-            <div className="w-1.5 h-1.5 bg-rose-500 rounded-full my-0.5" />
-          </div>
-
-          {/* Stacked Progress Track */}
-          <div className="h-7 w-full bg-slate-100 dark:bg-slate-800 rounded-md overflow-hidden flex items-stretch border border-slate-200 dark:border-slate-700">
-            {/* 1. Baseline Target Schedule */}
+          {/* Segmented Timeline Track */}
+          <div className="h-7 w-full bg-[#edf2ee] rounded-xl overflow-hidden flex shadow-inner p-0.5">
+            {/* 1. Baseline Target Duration */}
             <div
-              className="bg-slate-700 dark:bg-slate-600 flex items-center justify-center text-white text-[11px] font-mono font-semibold truncate px-2 transition-all duration-700"
+              className="h-full bg-[#244d3b] rounded-l-lg flex items-center justify-center text-[10px] font-mono font-bold text-white transition-all duration-700"
               style={{ width: baselineWidth }}
+              title={`Planned Baseline: ${baselineDays} days`}
             >
-              Planned Baseline ({baselineDays} Days)
+              Baseline Contract Duration
             </div>
 
             {/* 2. Expected Delay Drift */}
             <div
-              className="flex items-center justify-center text-white text-[11px] font-mono font-bold truncate px-1 transition-all duration-700"
+              className="h-full transition-all duration-700 flex items-center justify-center text-[10px] font-mono font-bold text-white"
               style={{
                 width: expectedDelayWidth,
                 backgroundColor: riskConfig.colorHex,
               }}
+              title={`Predicted Delay: +${predictedDelayDays} days`}
             >
               +{predictedDelayDays}d
             </div>
 
-            {/* 3. P90 Extended Variance Buffer */}
+            {/* 3. P90 Extreme Tail Buffer */}
             <div
-              className="bg-rose-500/40 border-l border-rose-500 flex items-center justify-center text-rose-800 dark:text-rose-200 text-[10px] font-mono truncate px-1 transition-all duration-700"
+              className="h-full bg-[#dc2626]/85 rounded-r-lg transition-all duration-700 flex items-center justify-center text-[9px] font-mono font-semibold text-white"
               style={{ width: p90ExtraWidth }}
+              title={`P90 Tail Risk: +${p90DelayDays} days`}
             >
-              P90 Buffer
+              P90
             </div>
           </div>
         </div>
 
-        {/* Milestone Cards Breakdown */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-          <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block">Baseline Contract Target</span>
-            <div className="flex items-baseline gap-1 mt-1 font-mono">
-              <span className="text-xl font-bold text-slate-800 dark:text-slate-100">{baselineDays}</span>
-              <span className="text-xs text-slate-500">Days ({plannedMonths} mos)</span>
-            </div>
-            <span className="text-[11px] text-slate-500 font-mono mt-0.5 block">
-              Planned: {timeline?.planned_completion_date || 'Q4 2026'}
+        {/* Legend & Details Footer */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-[#edf2ee] text-xs font-mono">
+          <div className="p-3.5 rounded-xl bg-[#f8faf9] border border-[#e2e8e4]">
+            <span className="text-[10px] text-[#6b7280] uppercase block font-semibold">Contractual Start Date</span>
+            <span className="font-bold text-[#1f2937] text-sm mt-0.5 block">
+              {timeline?.planned_start_date || '2024-01-01'}
             </span>
           </div>
 
-          <div
-            className="p-3 rounded-lg border"
-            style={{ borderColor: `${riskConfig.colorHex}55`, backgroundColor: riskConfig.bgHex }}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase text-slate-500 block">Expected Delay Drift</span>
-              <AlertCircle className="w-3.5 h-3.5" style={{ color: riskConfig.colorHex }} />
-            </div>
-            <div className="flex items-baseline gap-1 mt-1 font-mono">
-              <span className="text-xl font-bold" style={{ color: riskConfig.colorHex }}>+{predictedDelayDays}</span>
-              <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Days</span>
-            </div>
-            <span className="text-[11px] font-mono text-slate-600 dark:text-slate-400 mt-0.5 block">
-              Revised: ~{expectedTotalDays} Total Days
+          <div className="p-3.5 rounded-xl bg-[#f8faf9] border border-[#e2e8e4]">
+            <span className="text-[10px] text-[#6b7280] uppercase block font-semibold">Planned Handover</span>
+            <span className="font-bold text-[#1f2937] text-sm mt-0.5 block">
+              {timeline?.planned_completion_date || '2026-01-01'}
             </span>
           </div>
 
-          <div className="p-3 rounded-lg border border-rose-200 dark:border-rose-900/50 bg-rose-50/50 dark:bg-rose-950/20">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase text-slate-400 block">P90 Tail Risk Scenario</span>
-              <ShieldAlert className="w-3.5 h-3.5 text-rose-500" />
-            </div>
-            <div className="flex items-baseline gap-1 mt-1 font-mono">
-              <span className="text-xl font-bold text-rose-600 dark:text-rose-400">+{p90DelayDays}</span>
-              <span className="text-xs text-slate-500">Days</span>
-            </div>
-            <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 block">
-              Worst-Case: ~{p90TotalDays} Total Days
+          <div className="p-3.5 rounded-xl bg-[#fef2f2] border border-[#fecaca]">
+            <span className="text-[10px] text-[#991b1b] uppercase block font-semibold">ML Forecasted Milestone</span>
+            <span className="font-bold text-[#dc2626] text-sm mt-0.5 block">
+              +{predictedDelayDays} Days Net Drift
             </span>
           </div>
         </div>
